@@ -30,10 +30,19 @@ DMX uses a differential signaling method over RS485, so a MAX485 module is used 
 
 ### Parts List
 
+Buy:
+
 - ESP32 Development Board (~$3)
+
 - MAX485 Module (~$3)
-- Jumper Wires/Breadboard (~$5)
-- USB-C Cable and Wall Adapter (assumed on-hand)
+
+Assumed on-hand:
+
+- USB-C Cable and Wall Adapter
+
+- DMX Lighting Fixture(s) + XLR/DMX Cables
+
+- Soldering Iron and/or Jumper Wires + Breadboard
 
 ---
 
@@ -44,6 +53,8 @@ DMX uses a differential signaling method over RS485, so a MAX485 module is used 
 - [ ] Test with multiple DMX fixtures
 
   - [ ]  Document latency, distance, and reliability concerns
+
+- [ ] Implement more advanced fixture routines and effects (probably will want to use a library for this like [https://github.com/cansik/esp-dmx-max485](https://github.com/cansik/esp-dmx-max485), think more on interfacing with ShowBuddy or FL's DMX output)
 
 - [ ] Optimize code for performance and reliability
 
@@ -70,3 +81,7 @@ DMX uses a differential signaling method over RS485, so a MAX485 module is used 
 - **MAX485 Module 10-pack** [Amazon link](https://www.amazon.com/ANMBEST-Transceiver-Arduino-Raspberry-Industrial-Control/dp/B088Q8TD4V?s=electronics&sr=1-2)
 
 - **ShowBuddy Tutorial** [youtube video](https://youtu.be/_q0ZyGS0VWQ)
+
+![ESP32 Pinout](images/esp32_pinout.png)
+
+![XLR Wiring](images/XLR2.png)
