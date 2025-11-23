@@ -1,3 +1,5 @@
+#include <WiFi.h>
+#include <WebServer.h>
 #include <Arduino.h>
 
 ///////////////////////
@@ -15,18 +17,6 @@ HardwareSerial DMXSerial(2);  // UART2
 
 // DMX universe buffer (1-based channels, but we'll store from index 0)
 uint8_t dmxData[DMX_CHANNELS] = {0};
-
-void setup() {
-  // Enable RS-485 driver
-  pinMode(DMX_DE_RE_PIN, OUTPUT);
-  digitalWrite(DMX_DE_RE_PIN, HIGH);  // driver always enabled for transmit-only
-
-  // Start DMX UART: 250k baud, 8N2, no RX pin (we don't receive)
-  DMXSerial.begin(250000, SERIAL_8N2, -1, DMX_TX_PIN);
-
-  // Optional: small delay to let fixtures settle
-  delay(500);
-}
 
 /////////////////////////////
 // DMX frame send routine  //
@@ -60,34 +50,331 @@ void sendDMXFrame(uint8_t *data, int channels) {
   DMXSerial.flush();  // ensure everything has left the UART
 }
 
-// test proof of concept with constant pan and brightness ramps 
+const char* ssid = "Wireless_DMX_Controller";
+const char* pass = "DMX12345";
 
-void loop() {
-  static int value = 0;
-  static int step  = 2;
+WebServer server(80);
 
-  // Set channel 1 brightness (0–255)
-  dmxData[4] = value; // blue + yellow
-  dmxData[0] = value; // pan movement (https://manuals.plus/uking-2/uking-zq02001-25w-moving-head-dj-lights-user-instructions#dmx_addressing)
-  dmxData[5] = 110; // master dimmer (?)
-  dmxData[6] = value; // pan tilt speed (?)
+// If you embed the HTML instead of SPIFFS:
+const char indexHtml[] PROGMEM = R"HTML(
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ESP32 DMX Controller</title>
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #111;
+      color: #eee;
+    }
 
-  // Keep other channels fixed or set them as you like
-  // e.g., dmxData[1] = 128; dmxData[2] = 255; ...
+    body {
+      margin: 0;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
 
-  // Send a full DMX frame
-  sendDMXFrame(dmxData, DMX_CHANNELS);
+    h1 {
+      font-size: 1.5rem;
+      margin: 0.5rem 0 0.25rem;
+      text-align: center;
+    }
 
-  // Fade value up and down
-  value += step;
-  if (value >= 255) {
-    value = 255;
-    step  = -step;
-  } else if (value <= 0) {
-    value = 0;
-    step  = -step;
+    .subtitle {
+      font-size: 0.85rem;
+      opacity: 0.7;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .card {
+      background: #1d1d1d;
+      border-radius: 12px;
+      padding: 1rem;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .channels {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .channel-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.4rem;
+    }
+
+    @media (min-width: 600px) {
+      .channel-row {
+        grid-template-columns: 120px minmax(0, 1fr) 60px;
+        align-items: center;
+      }
+    }
+
+    .ch-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .value-box {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-size: 0.9rem;
+      padding: 0.1rem 0.3rem;
+      background: #222;
+      border-radius: 6px;
+      border: 1px solid #333;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 0.4rem 0.9rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: #3a6df0;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    .status {
+      font-size: 0.75rem;
+      opacity: 0.75;
+    }
+
+    .status.ok {
+      color: #7dff8b;
+    }
+
+    .status.err {
+      color: #ff7d7d;
+    }
+  </style>
+</head>
+<body>
+  <h1>ESP32 DMX Controller</h1>
+  <div class="subtitle">Adjust DMX channels 1–9 in real time</div>
+
+  <div class="card">
+    <div class="channels" id="channels"></div>
+
+    <div class="footer-row">
+      <div>
+        <button id="allOffBtn">All Off</button>
+        <button id="allFullBtn">All 255</button>
+      </div>
+      <div class="status" id="status">Idle</div>
+    </div>
+  </div>
+
+  <script>
+    // Describe your DMX channels here (names are just for UI)
+    const channelDefs = [
+      { ch: 1, label: "Ch 1 – Pan" },
+      { ch: 2, label: "Ch 2" },
+      { ch: 3, label: "Ch 3" },
+      { ch: 4, label: "Ch 4 – (unused)" },
+      { ch: 5, label: "Ch 5 – Blue + Yellow" },
+      { ch: 6, label: "Ch 6 – Master Dimmer" },
+      { ch: 7, label: "Ch 7 – Pan/Tilt Speed" },
+      { ch: 8, label: "Ch 8" },
+      { ch: 9, label: "Ch 9" },
+    ];
+
+    const channelsContainer = document.getElementById("channels");
+    const statusEl = document.getElementById("status");
+    const allOffBtn = document.getElementById("allOffBtn");
+    const allFullBtn = document.getElementById("allFullBtn");
+
+    function setStatus(text, ok = true) {
+      statusEl.textContent = text;
+      statusEl.classList.toggle("ok", ok);
+      statusEl.classList.toggle("err", !ok);
+    }
+
+    function sendDMXValue(ch, value) {
+      // Basic GET /set?ch=<ch>&val=<value>
+      fetch(`/set?ch=${encodeURIComponent(ch)}&val=${encodeURIComponent(value)}`)
+        .then((res) => {
+          if (!res.ok) throw new Error(res.statusText);
+          setStatus(`Set ch ${ch} → ${value}`, true);
+        })
+        .catch((err) => {
+          console.error(err);
+          setStatus(`Error sending ch ${ch}`, false);
+        });
+    }
+
+    function createChannelRow(def) {
+      const row = document.createElement("div");
+      row.className = "channel-row";
+
+      const label = document.createElement("div");
+      label.className = "ch-label";
+      label.textContent = def.label;
+
+      const slider = document.createElement("input");
+      slider.type = "range";
+      slider.min = "0";
+      slider.max = "255";
+      slider.value = "0";
+      slider.step = "1";
+
+      const valueBox = document.createElement("div");
+      valueBox.className = "value-box";
+      valueBox.textContent = "0";
+
+      // Live update value label
+      slider.addEventListener("input", () => {
+        valueBox.textContent = slider.value;
+      });
+
+      // Send on change / after drag
+      slider.addEventListener("change", () => {
+        const v = Number(slider.value) || 0;
+        sendDMXValue(def.ch, v);
+      });
+
+      row.appendChild(label);
+      row.appendChild(slider);
+      row.appendChild(valueBox);
+
+      def.slider = slider;
+      def.valueBox = valueBox;
+
+      return row;
+    }
+
+    // Build UI
+    channelDefs.forEach((def) => {
+      const row = createChannelRow(def);
+      channelsContainer.appendChild(row);
+    });
+
+    // Bulk controls
+    allOffBtn.addEventListener("click", () => {
+      channelDefs.forEach((def) => {
+        def.slider.value = 0;
+        def.valueBox.textContent = "0";
+        sendDMXValue(def.ch, 0);
+      });
+    });
+
+    allFullBtn.addEventListener("click", () => {
+      channelDefs.forEach((def) => {
+        def.slider.value = 255;
+        def.valueBox.textContent = "255";
+        sendDMXValue(def.ch, 255);
+      });
+    });
+
+    // Optional: sync UI from /state endpoint if you implement it on ESP32
+    function fetchState() {
+      fetch("/state")
+        .then((res) => res.json())
+        .then((json) => {
+          // Expecting something like: { "1": 0, "2": 128, ... }
+          channelDefs.forEach((def) => {
+            const v = Number(json[def.ch]) || 0;
+            def.slider.value = v;
+            def.valueBox.textContent = v;
+          });
+          setStatus("Synced from ESP32", true);
+        })
+        .catch(() => {
+          // It's okay if /state isn't implemented
+        });
+    }
+
+    // Try a sync shortly after load
+    setTimeout(fetchState, 1000);
+  </script>
+</body>
+</html>
+
+)HTML";
+
+void handleRoot() {
+  server.send_P(200, "text/html", indexHtml);
+}
+
+void handleSet() {
+  if (!server.hasArg("ch") || !server.hasArg("val")) {
+    server.send(400, "text/plain", "Missing ch or val");
+    return;
   }
 
-  // Frame rate ~40 Hz (25 ms)
-  delay(25);
+  int ch = server.arg("ch").toInt();
+  int val = server.arg("val").toInt();
+
+  if (ch < 1 || ch > DMX_CHANNELS || val < 0 || val > 255) {
+    server.send(400, "text/plain", "Bad ch/val");
+    return;
+  }
+
+  dmxData[ch - 1] = (uint8_t)val;
+  server.send(200, "text/plain", "OK");
+}
+
+void handleState() {
+  String json = "{";
+  for (int i = 0; i < DMX_CHANNELS; i++) {
+    json += "\"" + String(i + 1) + "\":" + String(dmxData[i]);
+    if (i < DMX_CHANNELS - 1) json += ",";
+  }
+  json += "}";
+  server.send(200, "application/json", json);
+}
+
+void setup() {
+  // --- your existing DMX setup ---
+  pinMode(DMX_DE_RE_PIN, OUTPUT);
+  digitalWrite(DMX_DE_RE_PIN, HIGH);
+  DMXSerial.begin(250000, SERIAL_8N2, -1, DMX_TX_PIN);
+  delay(500);
+
+  // --- WiFi AP + HTTP server ---
+  WiFi.softAP(ssid, pass);
+
+  server.on("/", handleRoot);
+  server.on("/set", HTTP_GET, handleSet);
+  server.on("/state", HTTP_GET, handleState);
+  server.begin();
+}
+
+void loop() {
+  // Serve HTTP
+  server.handleClient();
+
+  // Continuously send current DMX frame
+  sendDMXFrame(dmxData, DMX_CHANNELS);
+  delay(25);  // ~40 Hz
 }

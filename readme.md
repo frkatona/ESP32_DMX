@@ -68,6 +68,12 @@ Assumed on-hand:
 
 ---
 
+## More considerations
+
+- embedding vs SPIFFS vs LittleFS, etc., for web interface hosting ([video](https://youtu.be/Q3vV3MdOxAU) by MoThunderz)
+
+---
+
 ## Resources
 
 - **Gadget Reboot's Arduino-to-DMX Tutorial** [youtube video](https://www.youtube.com/watch?v=4PjBBBQB2m4&pp=ygUZZ2FkZ2V0IHJlYm9vdCBhcmR1aW5vIGRteNgGMg%3D%3D)
@@ -81,6 +87,9 @@ Assumed on-hand:
 - **MAX485 Module 10-pack** [Amazon link](https://www.amazon.com/ANMBEST-Transceiver-Arduino-Raspberry-Industrial-Control/dp/B088Q8TD4V?s=electronics&sr=1-2)
 
 - **ShowBuddy Tutorial** [youtube video](https://youtu.be/_q0ZyGS0VWQ)
+
+- https://randomnerdtutorials.com/esp32-web-server-beginners-guide/
+
 
 ![ESP32 Pinout](images/esp32_pinout.png)
 
