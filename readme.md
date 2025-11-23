@@ -20,9 +20,11 @@ DMX uses a differential signaling method over RS485, so a MAX485 module is used 
 
 ---
 
-### basic circuit
+### basic circuit / wiring
 
 ![alt text](images/basic-circuit-1.png)
+
+![alt text](images/XLR_wiring.png)
 
 ---
 
@@ -32,6 +34,26 @@ DMX uses a differential signaling method over RS485, so a MAX485 module is used 
 - MAX485 Module (~$3)
 - Jumper Wires/Breadboard (~$5)
 - USB-C Cable and Wall Adapter (assumed on-hand)
+
+---
+
+## to-do
+
+- [ ] Implement WIFI connectivity for remote control (get the interface to relay DMX commands successfully)
+
+- [ ] Test with multiple DMX fixtures
+
+  - [ ]  Document latency, distance, and reliability concerns
+
+- [ ] Optimize code for performance and reliability
+
+- [ ] More consideration for enclosure design, strain relief, and power supply options
+
+- [x] Create basic web interface for controlling DMX fixtures
+
+- [x] Proof-of-concept automated fixture routine
+
+- [x] Wire up basic circuit on breadboard
 
 ---
 
