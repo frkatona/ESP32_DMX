@@ -6,15 +6,7 @@ This project aims to use a basic ESP32 board to control multiple DMX lighting fi
 
 - DMX uses a differential signaling method over RS485, so a MAX485 module is used to convert signals from the ESP32's UART pins to DMX-compatible signals (**Figure 3a**)
 
-  - *Note that Youtuber Gadget Reboot seemed to experience no difficulties bitbanging his Arduino's GPIO pins directly into the MAX485 without a UART like the ESP32 has, but presumably that method would prove less consistent in a project where the CPU was having to deal with WiFi components or otherwise deviating from the strict timing requirements of DMX and using more complex fixtures like moving heads where imprecise timings may result in more obvious jerky motion.*
-
 - These signals connect to a DMX fixture via a standard 3-pin XLR cable (**Figure 3b**)
-
-  - *Note that the DMX standard insists on 5-pin XLR connectors to avoid possible confusion with audio XLR cables, particularly ones carrying phantom power which may damage the fixtures, but 3-pin XLR is the "de facto" standard.*  
-
-  - *Similarly, the cables differ in electrical characteristics, but most DMX fixtures seem tolerant of this to the best of my knowledge.*
-
-  - *Which of the a/b pair coming from the MAX485 goes to which pin on the XLR seems opposite from what I've read, though even the manual suggests that the polarity differs in some fixtures.  I'm not yet sure if this will influence downstream fixtures in a daisy-chain, though I suspect not.*
 
 - In addition to handling the DMX signal encoding, the ESP32 hosts a simple web interface written in HTML/CSS/JS that allows the user to control DMX signal sends over WiFi from a mobile device or computer (**Figure 4**)
 
@@ -36,13 +28,25 @@ This project aims to use a basic ESP32 board to control multiple DMX lighting fi
 
 ![Basic Circuit](images/basic-circuit-1.png)
 
+- *Note that Youtuber Gadget Reboot seemed to experience no difficulties bitbanging his Arduino's GPIO pins directly into the MAX485 without a UART like the ESP32 has, but presumably that method would prove less consistent in a project where the CPU was having to deal with WiFi components or otherwise deviating from the strict timing requirements of DMX and using more complex fixtures like moving heads where imprecise timings may result in more obvious jerky motion.*
+
 ![XLR Wiring](images/XLR_wiring.png)
+
+- *Note that the DMX standard insists on 5-pin XLR connectors to avoid possible confusion with audio XLR cables, particularly ones carrying phantom power which may damage the fixtures, but 3-pin XLR is the "de facto" standard.*  
+
+- *Similarly, XLR and proper DMX cables differ somewhat in electrical characteristics, but most DMX fixtures seem tolerant of this to the best of my understanding.*
+
+- *Which of the a/b pair coming from the MAX485 connects to hot/cold on the XLR seems opposite in practice from what I read in the fixture's manual, though it did suggest that the polarity is different in some fixtures.  I'm not yet sure if this will influence downstream fixtures in a daisy-chain, though I suspect it will not.*
 
 ---
 
 ### **Fig. 4:** Mobile Web Interface Screenshot (v1)
 
 ![Webpage v1](images/webpage_v1.png)
+
+- *Note that when connecting to the ESP32's access point, the user will need to manually navigate to the IP address (usually 192.168.4.1) in their web browser.  I also had to disable my phone's mobile data to ensure it connected properly*
+
+As a web interface, there is limitless room for extensibility and customizability here, though the current version is very basic.
 
 ---
 
