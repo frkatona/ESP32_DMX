@@ -1,6 +1,7 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <Arduino.h>
+#include <LittleFS.h>
 
 ///////////////////////
 // Pin configuration //
@@ -55,12 +56,6 @@ const char* pass = "DMX12345";
 
 WebServer server(80);
 
-#include "index_html.h"
-
-void handleRoot() {
-  server.send_P(200, "text/html", indexHtml);
-}
-
 void handleSet() {
   if (!server.hasArg("ch") || !server.hasArg("val")) {
     server.send(400, "text/plain", "Missing ch or val");
@@ -90,6 +85,14 @@ void handleState() {
 }
 
 void setup() {
+  Serial.begin(115200);
+  
+  // Initialize LittleFS
+  if(!LittleFS.begin()){
+    Serial.println("An Error has occurred while mounting LittleFS");
+    return;
+  }
+
   // --- your existing DMX setup ---
   pinMode(DMX_DE_RE_PIN, OUTPUT);
   digitalWrite(DMX_DE_RE_PIN, HIGH);
@@ -99,7 +102,12 @@ void setup() {
   // --- WiFi AP + HTTP server ---
   WiFi.softAP(ssid, pass);
 
-  server.on("/", handleRoot);
+  // Serve static files from LittleFS
+  server.serveStatic("/", LittleFS, "/index.html");
+  server.serveStatic("/style.css", LittleFS, "/style.css");
+  server.serveStatic("/script.js", LittleFS, "/script.js");
+  server.serveStatic("/index.html", LittleFS, "/index.html");
+
   server.on("/set", HTTP_GET, handleSet);
   server.on("/state", HTTP_GET, handleState);
   server.begin();
