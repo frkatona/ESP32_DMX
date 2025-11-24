@@ -42,15 +42,13 @@ This project aims to use a basic ESP32 board to control multiple DMX lighting fi
 
 ---
 
-### **Fig. 4:** Mobile Web Interface Screenshot (v1)
+### **Fig. 4:** Mobile Web Interface Screenshot (v3)
 
-![Webpage v1](images/webpage_v1.png)
+![Webpage v3](images/webpage_v3.png)
 
 - *Note that when connecting to the ESP32's access point, the user will need to manually navigate to the IP address (usually 192.168.4.1) in their web browser.  I also had to disable my phone's mobile data to ensure it connected properly*
 
 As a web interface, there is limitless room for extensibility and customizability here, though the current version is very basic.  
-
-At writing, there is an `index.html` file in this repo I use for prototyping before embedding the HTML as a string within the sketch.  Modularizing this, as well as other possible files, through a filesystem (probably LittleFS) is on the to-do list.
 
 Bear in mind that for multiple fixtures, each will need its own DMX address set on the device (unless they are all intended to respond identically).  Up to 512 channels can be sent this way in a single DMX daisychain set ("universe").  So, for instance, 100 devices with 5 channels each could be controlled separately (though its unclear at what point the esp32's performance will become a bottleneck).
 
