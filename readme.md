@@ -80,13 +80,15 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 - [ ] Test with multiple DMX fixtures
 
-- [ ] Document latency, distance, and reliability
-
 - [ ] Implement more advanced fixture routines and effects (probably will want to use a library for this like [https://github.com/cansik/esp-dmx-max485](https://github.com/cansik/esp-dmx-max485), think more on interfacing with ShowBuddy or FL's DMX output)
 
-- [ ] Optimize code for performance and reliability
+- [ ] Misc. quality of life and troubleshooting
+    - think on better initial states for channels
+    - blink on-board LED when sending DMX data
+    - handle disconnects gracefully
+    - persistent variables with [Preferences.h library](https://randomnerdtutorials.com/esp32-save-data-permanently-preferences/)
 
-- [ ] Misc. quality of life and troubleshooting (e.g., blink on-board LED when sending DMX data, handle disconnects gracefully, persistent variables with [Preferences.h library](https://randomnerdtutorials.com/esp32-save-data-permanently-preferences/), etc.)
+- [x] Migrate embedded HTML to a LittleFS filesystem for more modularity and ease of updating
 
 - [x] Implement WIFI connectivity for remote control (get the interface to relay DMX commands successfully)
 
@@ -100,11 +102,11 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 ## More considerations
 
-- embedding vs SPIFFS vs LittleFS, etc., for web interface hosting ([video](https://youtu.be/Q3vV3MdOxAU) by MoThunderz)
-
 - connecting a second ESP32 to a MIDI foot controller to trigger DMX scenes for live performance control where the web interface is impractical
 
 - enclosure design, strain relief, and power supply options
+
+- documenting and optimizing for performance and reliability
 
 - ESP32's 4 MB of flash is almost certainly overkill for this project, but what level of complexity might require an SD module?
 
