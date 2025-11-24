@@ -140,15 +140,15 @@
   <script>
     // Describe your DMX channels here (names are just for UI)
     const channelDefs = [
-      { ch: 1, label: "Ch 1 – Pan" },
-      { ch: 2, label: "Ch 2" },
-      { ch: 3, label: "Ch 3" },
-      { ch: 4, label: "Ch 4 – (unused)" },
-      { ch: 5, label: "Ch 5 – Blue + Yellow" },
-      { ch: 6, label: "Ch 6 – Master Dimmer" },
-      { ch: 7, label: "Ch 7 – Pan/Tilt Speed" },
-      { ch: 8, label: "Ch 8" },
-      { ch: 9, label: "Ch 9" },
+      { ch: 1, label: "Ch 1 — Yaw" }, // 000-255 low yaw to high yaw
+      { ch: 2, label: "Ch 2 — Tilt" }, // 000-255 low tilt to high tilt
+      { ch: 3, label: "Ch 3 — Color Wheel" }, // 0-71 Gobo, 72-139 Static Pair, 140+ Auto
+      { ch: 4, label: "Ch 4 — Gobo Wheel" }, //000-007 open white, 000-015 gobo 1, 016-023 gobo 2, 024-031 gobo 3, 032-039 gobo 4, 040-047 gobo 5, 048-055 gobo 6, 056-063 gobo 7, 064-071 white shake, 072-079 shake 1, 080-087 shake 2, 088-095 shake 3, 096-103 shake 4, 104-111 shake 5, 112-119 shake 6, 120-127 shake 7, 128-135 auto gobo slow to fast
+      { ch: 5, label: "Ch 5 — Strobe" }, // 000-009 non functional, 010-249 strobe slow to fast, 250-255 strobe off
+      { ch: 6, label: "Ch 6 — Master Dimmer" }, // 000-009 off, 010-255 brightness low to high
+      { ch: 7, label: "Ch 7 — Pan/Tilt Speed" }, // 000-255 fast to slow
+      { ch: 8, label: "Ch 8 — Auto Mode" }, // 000-135 inactive, 135-159 Auto, 160-184 sound mode 3, 185-209 sound mode 2, 210-234 sound mode 1, 235-255 sound mode 0
+      { ch: 9, label: "Ch 9 — Reset" }, // 000-249 no reset, 250-255 reset
     ];
 
     const channelsContainer = document.getElementById("channels");

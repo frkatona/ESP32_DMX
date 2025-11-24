@@ -30,6 +30,8 @@ This project aims to use a basic ESP32 board to control multiple DMX lighting fi
 
 - *Note that Youtuber Gadget Reboot seemed to experience no difficulties bitbanging his Arduino's GPIO pins directly into the MAX485 without a UART like the ESP32 has, but presumably that method would prove less consistent in a project where the CPU was having to deal with WiFi components or otherwise deviating from the strict timing requirements of DMX and using more complex fixtures like moving heads where imprecise timings may result in more obvious jerky motion.*
 
+- *Also note that the original ChatGPT sketch used the D4 GPIO pin to selectively pull the TX/RX pins high for control over transmission direction, but I didn't understand why that would be helpful and so hardwired them both to VCC which corresponds to a permanent transmission-enable / receive-disable.*
+
 ![XLR Wiring](images/XLR_wiring.png)
 
 - *Note that the DMX standard insists on 5-pin XLR connectors to avoid possible confusion with audio XLR cables, particularly ones carrying phantom power which may damage the fixtures, but 3-pin XLR is the "de facto" standard.*  
@@ -46,25 +48,29 @@ This project aims to use a basic ESP32 board to control multiple DMX lighting fi
 
 - *Note that when connecting to the ESP32's access point, the user will need to manually navigate to the IP address (usually 192.168.4.1) in their web browser.  I also had to disable my phone's mobile data to ensure it connected properly*
 
-As a web interface, there is limitless room for extensibility and customizability here, though the current version is very basic.
+As a web interface, there is limitless room for extensibility and customizability here, though the current version is very basic.  
+
+At writing, there is an `index.html` file in this repo I use for prototyping before embedding the HTML as a string within the sketch.  Modularizing this, as well as other possible files, through a filesystem (probably LittleFS) is on the to-do list.
 
 ---
 
 ### **Fig. 5:** Parts List
 
-Buy:
+**Buy:**
 
-- ESP32 Development Board - [3-pack Amazon link](https://www.amazon.com/AITRIP-ESP-WROOM-32-Development-Microcontroller-Integrated/dp/B0CR5Y2JVD?s=electronics&sr=1-4)
+- ESP32 Development Board - [$16 for a 3-pack at Amazon](https://www.amazon.com/AITRIP-ESP-WROOM-32-Development-Microcontroller-Integrated/dp/B0CR5Y2JVD?s=electronics&sr=1-4)
 
-- MAX485 Module - [10-pack Amazon link](https://www.amazon.com/ANMBEST-Transceiver-Arduino-Raspberry-Industrial-Control/dp/B088Q8TD4V?s=electronics&sr=1-2)
+- MAX485 Module - [$10 for a 10-pack at Amazon](https://www.amazon.com/ANMBEST-Transceiver-Arduino-Raspberry-Industrial-Control/dp/B088Q8TD4V?s=electronics&sr=1-2)
 
-Assumed on-hand:
+**Assumed on-hand:**
 
 - USB-C Cable and Wall Adapter
 
 - DMX Lighting Fixture(s) + XLR/DMX Cables (one cable for each fixture)
 
 - Soldering Equipment and/or Jumper Wires + Breadboard
+
+Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals may also be useful
 
 ---
 
@@ -77,6 +83,8 @@ Assumed on-hand:
 - [ ] Implement more advanced fixture routines and effects (probably will want to use a library for this like [https://github.com/cansik/esp-dmx-max485](https://github.com/cansik/esp-dmx-max485), think more on interfacing with ShowBuddy or FL's DMX output)
 
 - [ ] Optimize code for performance and reliability
+
+- [ ] Misc. quality of life and troubleshooting (e.g., blink on-board LED when sending DMX data, handle disconnects gracefully, persistent variables with [Preferences.h library](https://randomnerdtutorials.com/esp32-save-data-permanently-preferences/), etc.)
 
 - [x] Implement WIFI connectivity for remote control (get the interface to relay DMX commands successfully)
 
@@ -92,7 +100,11 @@ Assumed on-hand:
 
 - embedding vs SPIFFS vs LittleFS, etc., for web interface hosting ([video](https://youtu.be/Q3vV3MdOxAU) by MoThunderz)
 
+- connecting a second ESP32 to a MIDI foot controller to trigger DMX scenes for live performance control where the web interface is impractical
+
 - enclosure design, strain relief, and power supply options
+
+- migrating to platform.io vs Arduino IDE for easier dependency management and version control
 
 - what exactly is in the USB-to-DMX adapters on the market that make them so expensive (~$70 for the barebones open source Enttec)?
 
