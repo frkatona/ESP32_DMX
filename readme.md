@@ -52,6 +52,8 @@ As a web interface, there is limitless room for extensibility and customizabilit
 
 At writing, there is an `index.html` file in this repo I use for prototyping before embedding the HTML as a string within the sketch.  Modularizing this, as well as other possible files, through a filesystem (probably LittleFS) is on the to-do list.
 
+Bear in mind that for multiple fixtures, each will need its own DMX address set on the device (unless they are all intended to respond identically).  Up to 512 channels can be sent this way in a single DMX daisychain set ("universe").  So, for instance, 100 devices with 5 channels each could be controlled separately (though its unclear at what point the esp32's performance will become a bottleneck).
+
 ---
 
 ### **Fig. 5:** Parts List
@@ -103,6 +105,8 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 - connecting a second ESP32 to a MIDI foot controller to trigger DMX scenes for live performance control where the web interface is impractical
 
 - enclosure design, strain relief, and power supply options
+
+- ESP32's 4 MB of flash is almost certainly overkill for this project, but what level of complexity might require an SD module?
 
 - migrating to platform.io vs Arduino IDE for easier dependency management and version control
 
