@@ -8,23 +8,29 @@ DMX uses a differential signaling method over RS485, so a MAX485 module is used 
 
 ---
 
-### Goal Illustration
+### **Fig. 1:** Overview
 
-![alt text](images/wireless_ESP32_DMX_schematic.png)
-
----
-
-### proof of concept
-
-![alt text](images/proof-of-concept-1.gif)
+![Overview Schematic](images/wireless_ESP32_DMX_schematic.png)
 
 ---
 
-### basic circuit / wiring
+### Proof of concept
 
-![alt text](images/basic-circuit-1.png)
+![Proof of Concept](images/proof-of-concept-1.gif)
 
-![alt text](images/XLR_wiring.png)
+---
+
+### Initial circuit, soldering, & wiring
+
+![Basic Circuit](images/basic-circuit-1.png)
+
+![XLR Wiring](images/XLR_wiring.png)
+
+---
+
+### Mobile Web Interface Screenshot (v1)
+
+![Webpage v1](images/webpage_v1.png)
 
 ---
 
@@ -32,9 +38,9 @@ DMX uses a differential signaling method over RS485, so a MAX485 module is used 
 
 Buy:
 
-- ESP32 Development Board (~$3)
+- ESP32 Development Board - [3-pack Amazon link](https://www.amazon.com/AITRIP-ESP-WROOM-32-Development-Microcontroller-Integrated/dp/B0CR5Y2JVD?s=electronics&sr=1-4)
 
-- MAX485 Module (~$3)
+- MAX485 Module - [10-pack Amazon link](https://www.amazon.com/ANMBEST-Transceiver-Arduino-Raspberry-Industrial-Control/dp/B088Q8TD4V?s=electronics&sr=1-2)
 
 Assumed on-hand:
 
@@ -48,15 +54,15 @@ Assumed on-hand:
 
 ## to-do
 
-- [ ] Implement WIFI connectivity for remote control (get the interface to relay DMX commands successfully)
-
 - [ ] Test with multiple DMX fixtures
 
-  - [ ]  Document latency, distance, and reliability concerns
+- [ ] Document latency, distance, and reliability
 
 - [ ] Implement more advanced fixture routines and effects (probably will want to use a library for this like [https://github.com/cansik/esp-dmx-max485](https://github.com/cansik/esp-dmx-max485), think more on interfacing with ShowBuddy or FL's DMX output)
 
 - [ ] Optimize code for performance and reliability
+
+- [x] Implement WIFI connectivity for remote control (get the interface to relay DMX commands successfully)
 
 - [ ] More consideration for enclosure design, strain relief, and power supply options
 
@@ -82,15 +88,18 @@ Assumed on-hand:
 
 - **ZQ02001 25W Moving Head DJ Lights** [Manual](https://manuals.plus/uking-2/uking-zq02001-25w-moving-head-dj-lights-user-instructions#dmx_addressing) (used in proof of concept)
 
-- **ESP32 3-pack** [Amazon link](https://www.amazon.com/AITRIP-ESP-WROOM-32-Development-Microcontroller-Integrated/dp/B0CR5Y2JVD?s=electronics&sr=1-4)
-
-- **MAX485 Module 10-pack** [Amazon link](https://www.amazon.com/ANMBEST-Transceiver-Arduino-Raspberry-Industrial-Control/dp/B088Q8TD4V?s=electronics&sr=1-2)
-
 - **ShowBuddy Tutorial** [youtube video](https://youtu.be/_q0ZyGS0VWQ)
 
 - https://randomnerdtutorials.com/esp32-web-server-beginners-guide/
 
+---
+
+### ESP32 Pinout
 
 ![ESP32 Pinout](images/esp32_pinout.png)
+
+---
+
+### XLR Wiring
 
 ![XLR Wiring](images/XLR2.png)
