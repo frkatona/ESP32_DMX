@@ -2,25 +2,37 @@
 
 ### Overview
 
-This project aims to use a basic ESP32 board to control multiple DMX lighting fixtures wirelessly through a web interface, a la WLED, for less than $15 in parts.
+This project aims to use a basic ESP32 board to control multiple DMX lighting fixtures wirelessly through a web interface, a la WLED, for less than $15 in parts (**Figure 1**).  Here, I use a moving head fixture for proof of concept (**Figure 2**).
 
-DMX uses a differential signaling method over RS485, so a MAX485 module is used to convert signals from the ESP32's UART pins to DMX-compatible signals.  Youtuber Gadget Reboot seemed to experience no difficulties bitbanging his Arduino's GPIO pins directly into the MAX485 without a UART like the ESP32 has, but presumably that would prove more inconsistent in a project where the CPU was having to deal with WIFI components or otherwise deviating from the strict timing requirements of DMX.
+- DMX uses a differential signaling method over RS485, so a MAX485 module is used to convert signals from the ESP32's UART pins to DMX-compatible signals (**Figure 3a**)
+
+  - *Note that Youtuber Gadget Reboot seemed to experience no difficulties bitbanging his Arduino's GPIO pins directly into the MAX485 without a UART like the ESP32 has, but presumably that method would prove less consistent in a project where the CPU was having to deal with WiFi components or otherwise deviating from the strict timing requirements of DMX and using more complex fixtures like moving heads where imprecise timings may result in more obvious jerky motion.*
+
+- These signals connect to a DMX fixture via a standard 3-pin XLR cable (**Figure 3b**)
+
+  - *Note that the DMX standard insists on 5-pin XLR connectors to avoid possible confusion with audio XLR cables, particularly ones carrying phantom power which may damage the fixtures, but 3-pin XLR is the "de facto" standard.*  
+
+  - *Similarly, the cables differ in electrical characteristics, but most DMX fixtures seem tolerant of this to the best of my knowledge.*
+
+  - *Which of the a/b pair coming from the MAX485 goes to which pin on the XLR seems opposite from what I've read, though even the manual suggests that the polarity differs in some fixtures.  I'm not yet sure if this will influence downstream fixtures in a daisy-chain, though I suspect not.*
+
+- In addition to handling the DMX signal encoding, the ESP32 hosts a simple web interface written in HTML/CSS/JS that allows the user to control DMX signal sends over WiFi from a mobile device or computer (**Figure 4**)
 
 ---
 
-### **Fig. 1:** Overview
+### **Fig. 1:** Overview Scheme
 
 ![Overview Schematic](images/wireless_ESP32_DMX_schematic.png)
 
 ---
 
-### Proof of concept
+### **Fig. 2:** Proof of concept
 
 ![Proof of Concept](images/proof-of-concept-1.gif)
 
 ---
 
-### Initial circuit, soldering, & wiring
+### **Fig. 3:** Initial circuit, soldering, & wiring
 
 ![Basic Circuit](images/basic-circuit-1.png)
 
@@ -28,13 +40,13 @@ DMX uses a differential signaling method over RS485, so a MAX485 module is used 
 
 ---
 
-### Mobile Web Interface Screenshot (v1)
+### **Fig. 4:** Mobile Web Interface Screenshot (v1)
 
 ![Webpage v1](images/webpage_v1.png)
 
 ---
 
-### Parts List
+### **Fig. 5:** Parts List
 
 Buy:
 
@@ -46,9 +58,9 @@ Assumed on-hand:
 
 - USB-C Cable and Wall Adapter
 
-- DMX Lighting Fixture(s) + XLR/DMX Cables
+- DMX Lighting Fixture(s) + XLR/DMX Cables (one cable for each fixture)
 
-- Soldering Iron and/or Jumper Wires + Breadboard
+- Soldering Equipment and/or Jumper Wires + Breadboard
 
 ---
 
@@ -64,8 +76,6 @@ Assumed on-hand:
 
 - [x] Implement WIFI connectivity for remote control (get the interface to relay DMX commands successfully)
 
-- [ ] More consideration for enclosure design, strain relief, and power supply options
-
 - [x] Create basic web interface for controlling DMX fixtures
 
 - [x] Proof-of-concept automated fixture routine
@@ -77,6 +87,10 @@ Assumed on-hand:
 ## More considerations
 
 - embedding vs SPIFFS vs LittleFS, etc., for web interface hosting ([video](https://youtu.be/Q3vV3MdOxAU) by MoThunderz)
+
+- enclosure design, strain relief, and power supply options
+
+- what exactly is in the USB-to-DMX adapters on the market that make them so expensive (~$70 for the barebones open source Enttec)?
 
 ---
 
@@ -94,12 +108,12 @@ Assumed on-hand:
 
 ---
 
-### ESP32 Pinout
+### **Fig. 6:** ESP32 Pinout
 
 ![ESP32 Pinout](images/esp32_pinout.png)
 
 ---
 
-### XLR Wiring
+### **Fig. 7:** XLR Wiring
 
 ![XLR Wiring](images/XLR2.png)
