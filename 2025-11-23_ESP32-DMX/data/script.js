@@ -1,7 +1,7 @@
 // DMX channels configuration
 const channelDefs = [
     { ch: 1, label: "Yaw", type: "slider" },
-    { ch: 2, label: "Tilt", type: "slider" },
+    { ch: 2, label: "Pitch", type: "slider" },
     {
         ch: 3,
         label: "Color Wheel",
@@ -38,7 +38,7 @@ const channelDefs = [
     },
     { ch: 5, label: "Strobe", type: "slider" },
     { ch: 6, label: "Master Dimmer", type: "slider" },
-    { ch: 7, label: "Pan/Tilt Speed", type: "slider" },
+    { ch: 7, label: "Movement Speed", type: "slider" },
     {
         ch: 8,
         label: "Auto Mode",

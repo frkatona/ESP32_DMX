@@ -52,6 +52,8 @@ As a web interface, there is limitless room for extensibility and customizabilit
 
 Bear in mind that for multiple fixtures, each will need its own DMX address set locally on that device (unless they are all intended to respond identically).  Up to 512 channels can be sent this way in a single DMX daisychained set (a "DMX universe").  So, for instance, 100 devices with 5 channels each could all receive unique instructions (though its unclear at what point the esp32's performance will become a bottleneck).
 
+Because I just had to go and use a stupid file system, you will need to format the LittleFS filesystem when uploading the code.  This can take various forms, but in Arduino IDE 2.x, you can download the most recent littlefs .vsix release from [here](https://github.com/earlephilhower/arduino-littlefs-upload/releases), restart the IDE, quit the serial monitor if it's running, and then use the "Upload to LittleFS" command in the command palette (Ctrl+Shift+P).  The addition of this file system accomplishes virtually nothing except to allow you to edit the HTML/CSS/JS files during production as separate files, like you would with a normal web server. That was worth 6 hours.
+
 ---
 
 ### **Fig. 5:** Parts List

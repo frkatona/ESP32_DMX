@@ -3,6 +3,9 @@
 #include <Arduino.h>
 #include <LittleFS.h>
 
+#define FORMAT_LITTLEFS_IF_FAILED true
+
+
 ///////////////////////
 // Pin configuration //
 ///////////////////////
@@ -88,18 +91,17 @@ void setup() {
   Serial.begin(115200);
   
   // Initialize LittleFS
-  if(!LittleFS.begin()){
+  // format filesystem if it fails to mount
+  if(!LittleFS.begin(FORMAT_LITTLEFS_IF_FAILED)){
     Serial.println("An Error has occurred while mounting LittleFS");
-    return;
   }
 
-  // --- your existing DMX setup ---
   pinMode(DMX_DE_RE_PIN, OUTPUT);
   digitalWrite(DMX_DE_RE_PIN, HIGH);
   DMXSerial.begin(250000, SERIAL_8N2, -1, DMX_TX_PIN);
   delay(500);
 
-  // --- WiFi AP + HTTP server ---
+  // WiFi AP + HTTP server
   WiFi.softAP(ssid, pass);
 
   // Serve static files from LittleFS
