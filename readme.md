@@ -50,7 +50,7 @@ This project aims to use a basic ESP32 board to control multiple DMX lighting fi
 
 As a web interface, there is limitless room for extensibility and customizability here, though the current version is very basic.  
 
-Bear in mind that for multiple fixtures, each will need its own DMX address set on the device (unless they are all intended to respond identically).  Up to 512 channels can be sent this way in a single DMX daisychain set ("universe").  So, for instance, 100 devices with 5 channels each could be controlled separately (though its unclear at what point the esp32's performance will become a bottleneck).
+Bear in mind that for multiple fixtures, each will need its own DMX address set locally on that device (unless they are all intended to respond identically).  Up to 512 channels can be sent this way in a single DMX daisychained set (a "DMX universe").  So, for instance, 100 devices with 5 channels each could all receive unique instructions (though its unclear at what point the esp32's performance will become a bottleneck).
 
 ---
 
