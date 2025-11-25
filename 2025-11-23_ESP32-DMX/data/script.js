@@ -1,7 +1,6 @@
 // DMX channels configuration
 const channelDefs = [
-    { ch: 1, label: "Yaw", type: "slider" },
-    { ch: 2, label: "Pitch", type: "slider" },
+    // Ch1 (Yaw) and Ch2 (Pitch) are handled by the XY Pad
     {
         ch: 3,
         label: "Color Wheel",
@@ -66,6 +65,14 @@ const statusEl = document.getElementById("status");
 const allOffBtn = document.getElementById("allOffBtn");
 const allFullBtn = document.getElementById("allFullBtn");
 
+// XY Pad Elements
+const xyPad = document.getElementById("xyPad");
+const xyHandle = document.getElementById("xyHandle");
+const valX = document.getElementById("valX");
+const valY = document.getElementById("valY");
+
+let isDragging = false;
+
 function setStatus(text, ok = true) {
     statusEl.textContent = text;
     // statusEl.classList.toggle("ok", ok);
@@ -84,6 +91,76 @@ function sendDMXValue(ch, value) {
         });
 }
 
+// --- XY Pad Logic ---
+function updateXY(x, y) {
+    // Clamp values 0-255
+    x = Math.max(0, Math.min(255, Math.round(x)));
+    y = Math.max(0, Math.min(255, Math.round(y)));
+
+    // Update UI
+    valX.textContent = x;
+    valY.textContent = y;
+
+    // Position handle (0-100%)
+    const pctX = (x / 255) * 100;
+    const pctY = (y / 255) * 100;
+    xyHandle.style.left = `${pctX}%`;
+    xyHandle.style.top = `${pctY}%`;
+
+    // Send DMX
+    sendDMXValue(1, x);
+    sendDMXValue(2, y);
+}
+
+function handleDrag(e) {
+    if (!isDragging) return;
+
+    // Support touch and mouse events
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+    const rect = xyPad.getBoundingClientRect();
+    const offsetX = clientX - rect.left;
+    const offsetY = clientY - rect.top;
+
+    // Calculate 0-255 based on position within the pad
+    let x = (offsetX / rect.width) * 255;
+    let y = (offsetY / rect.height) * 255;
+
+    updateXY(x, y);
+}
+
+xyPad.addEventListener("mousedown", (e) => {
+    isDragging = true;
+    xyHandle.classList.add("active");
+    handleDrag(e);
+});
+
+xyPad.addEventListener("touchstart", (e) => {
+    isDragging = true;
+    xyHandle.classList.add("active");
+    handleDrag(e);
+    e.preventDefault(); // Prevent scrolling
+}, { passive: false });
+
+window.addEventListener("mousemove", handleDrag);
+window.addEventListener("touchmove", handleDrag, { passive: false });
+
+window.addEventListener("mouseup", () => {
+    if (isDragging) {
+        isDragging = false;
+        xyHandle.classList.remove("active");
+    }
+});
+
+window.addEventListener("touchend", () => {
+    if (isDragging) {
+        isDragging = false;
+        xyHandle.classList.remove("active");
+    }
+});
+
+// --- Channel Row Logic ---
 function createChannelRow(def) {
     const row = document.createElement("div");
     row.className = "channel-row";
@@ -231,6 +308,10 @@ channelDefs.forEach((def) => {
 
 // Bulk controls
 allOffBtn.addEventListener("click", () => {
+    // Reset XY Pad
+    updateXY(0, 0);
+
+    // Reset other channels
     channelDefs.forEach((def) => {
         if (def.type === "slider") {
             def.control.value = 0;
@@ -250,6 +331,9 @@ allOffBtn.addEventListener("click", () => {
 });
 
 allFullBtn.addEventListener("click", () => {
+    // Set XY Pad to full? Or maybe center? Let's do full for consistency
+    updateXY(255, 255);
+
     channelDefs.forEach((def) => {
         if (def.type === "slider") {
             def.control.value = 255;
@@ -265,6 +349,19 @@ function fetchState() {
     fetch("/state")
         .then((res) => res.json())
         .then((json) => {
+            // Sync XY Pad
+            const x = Number(json[1]) || 0;
+            const y = Number(json[2]) || 0;
+
+            // Update UI without sending DMX (avoid loop)
+            valX.textContent = x;
+            valY.textContent = y;
+            const pctX = (x / 255) * 100;
+            const pctY = (y / 255) * 100;
+            xyHandle.style.left = `${pctX}%`;
+            xyHandle.style.top = `${pctY}%`;
+
+            // Sync other channels
             channelDefs.forEach((def) => {
                 const v = Number(json[def.ch]) || 0;
 
