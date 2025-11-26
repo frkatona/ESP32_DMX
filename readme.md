@@ -60,7 +60,7 @@ Because I just had to go and use a stupid file system, you will need to format t
 
 **Buy:**
 
-- ESP32 Development Board - [$16 for a 3-pack at Amazon](https://www.amazon.com/AITRIP-ESP-WROOM-32-Development-Microcontroller-Integrated/dp/B0CR5Y2JVD?s=electronics&sr=1-4)
+- ESP32 Development Board - [$17 for a 5-pack at Amazon](https://www.amazon.com/5PCS-Development-LUIRSAY-Bluetooth-Support/dp/B0DZNHYDS8?sr=8-12) (sales timings fluctate)
 
 - MAX485 Module - [$10 for a 10-pack at Amazon](https://www.amazon.com/ANMBEST-Transceiver-Arduino-Raspberry-Industrial-Control/dp/B088Q8TD4V?s=electronics&sr=1-2)
 
@@ -73,6 +73,14 @@ Because I just had to go and use a stupid file system, you will need to format t
 - Soldering Equipment and/or Jumper Wires + Breadboard
 
 Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals may also be useful
+
+**Compare to existing options**
+
+- $67 usb-to-dmx adapter by Entecc - [amazon](https://www.amazon.com/Open-DMX-USB-Interface-Controller/dp/B00O9RY664?sr=8-4)
+
+- $80 WiFi DMX controller by Pknight - [amazon](https://www.amazon.com/Pknight-Controller-Transceiver-Connectivity-EN-3P/dp/B091DS89M4?sr=8-5)
+
+
 
 ---
 
