@@ -103,7 +103,7 @@ function updateXY(x, y) {
 
     // Position handle (0-100%)
     const pctX = (x / 255) * 100;
-    const pctY = (y / 255) * 100;
+    const pctY = 100 - ((y / 255) * 100);
     xyHandle.style.left = `${pctX}%`;
     xyHandle.style.top = `${pctY}%`;
 
@@ -125,7 +125,7 @@ function handleDrag(e) {
 
     // Calculate 0-255 based on position within the pad
     let x = (offsetX / rect.width) * 255;
-    let y = (offsetY / rect.height) * 255;
+    let y = ((rect.height - offsetY) / rect.height) * 255;
 
     updateXY(x, y);
 }
@@ -200,7 +200,7 @@ function createChannelRow(def) {
         let currentMax = 255;
 
         // Helper to update slider constraints
-        const setRange = (min, max, btn) => {
+        const setRange = (min, max, btn, forceMin = false, suppressDMX = false) => {
             currentMin = min;
             currentMax = max;
 
@@ -208,17 +208,26 @@ function createChannelRow(def) {
             Array.from(capsContainer.children).forEach(b => b.classList.remove("active"));
             if (btn) btn.classList.add("active");
 
-            // Clamp slider value to new range
-            let val = parseInt(slider.value);
-            if (val < min) val = min;
-            if (val > max) val = max;
-
+            // Update slider constraints
             slider.min = min;
             slider.max = max;
-            slider.value = val;
 
+            // Determine new value
+            let val = parseInt(slider.value);
+            if (forceMin) {
+                val = min;
+            } else {
+                // Clamp existing value
+                if (val < min) val = min;
+                if (val > max) val = max;
+            }
+
+            slider.value = val;
             valueBox.textContent = val;
-            sendDMXValue(def.ch, val);
+
+            if (!suppressDMX) {
+                sendDMXValue(def.ch, val);
+            }
         };
 
         def.ranges.forEach((r, idx) => {
@@ -230,7 +239,7 @@ function createChannelRow(def) {
             if (idx === 0) btn.classList.add("active");
 
             btn.addEventListener("click", () => {
-                setRange(r.min, r.max, btn);
+                setRange(r.min, r.max, btn, true); // Force min on click
             });
 
             capsContainer.appendChild(btn);
@@ -321,11 +330,7 @@ allOffBtn.addEventListener("click", () => {
             // Reset to first range
             const firstRange = def.ranges[0];
             const firstBtn = def.capsContainer.children[0];
-            def.setRange(firstRange.min, firstRange.max, firstBtn);
-
-            def.control.value = firstRange.min;
-            def.valueBox.textContent = firstRange.min;
-            sendDMXValue(def.ch, firstRange.min);
+            def.setRange(firstRange.min, firstRange.max, firstBtn, true);
         }
     });
 });
@@ -357,7 +362,7 @@ function fetchState() {
             valX.textContent = x;
             valY.textContent = y;
             const pctX = (x / 255) * 100;
-            const pctY = (y / 255) * 100;
+            const pctY = 100 - ((y / 255) * 100);
             xyHandle.style.left = `${pctX}%`;
             xyHandle.style.top = `${pctY}%`;
 
@@ -373,7 +378,7 @@ function fetchState() {
                     if (rangeIdx !== -1) {
                         const range = def.ranges[rangeIdx];
                         const btn = def.capsContainer.children[rangeIdx];
-                        def.setRange(range.min, range.max, btn);
+                        def.setRange(range.min, range.max, btn, false, true); // Suppress DMX on sync
                         def.control.value = v;
                     }
                 }
