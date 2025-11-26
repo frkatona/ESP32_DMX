@@ -74,7 +74,12 @@ h1 {
     width: 100%;
     max-width: 300px;
     aspect-ratio: 1;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+    background-color: rgba(255, 255, 255, 0.02);
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 25% 25%;
+    background-position: center;
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     position: relative;
