@@ -6,12 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ESP32 DMX Controller</title>
     <link rel="stylesheet" href="style.css">
-    </div>
-    <div class="status" id="status">Idle</div>
-    </div>
+</head>
+
+<body>
+    <h1>ESP32 DMX Controller</h1>
+    <div class="subtitle">Adjust DMX channels 1–9 in real time</div>
+
+    <div class="card">
+        <!-- XY Pad for Ch1 (Yaw) & Ch2 (Pitch) -->
+        <div class="xy-pad-container">
+            <div class="xy-label">Position (Yaw / Pitch)</div>
+            <div class="xy-area" id="xyPad">
+                <div class="xy-handle" id="xyHandle"></div>
+            </div>
+            <div class="xy-values">
+                <span>X: <span id="valX">0</span></span>
+                <span>Y: <span id="valY">0</span></span>
+            </div>
+        </div>
+
+        <div class="channels" id="channels"></div>
+
+        <div class="footer-row">
+            <div>
+                <button class="bulk-btn" id="allOffBtn">All Off</button>
+                <button class="bulk-btn" id="allFullBtn">All 255</button>
+            </div>
+            <div class="status" id="status">Idle</div>
+        </div>
     </div>
 
     <script src="script.js"></script>
-    </body>
+</body>
 
 </html>
