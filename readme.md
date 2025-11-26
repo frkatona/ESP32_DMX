@@ -60,7 +60,7 @@ Because I just had to go and use a stupid file system, you will need to format t
 
 ---
 
-### **Fig. 5:** Parts List
+### Parts List
 
 **Buy:**
 
@@ -122,11 +122,17 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 - connecting a second ESP32 to a MIDI foot controller to trigger DMX scenes for live performance control where the web interface is impractical
 
+- adding a button to the web interface to trigger a routine
+
+- adding a button to the web interface to swap to a simple page with like 100 simple, numbered sliders for generic channel control
+    
+    - maybe a script to highlight each one in turn and slide it up and down to track unknown fixture parameters 
+
 - enclosure design, strain relief, and power supply options
 
-- documenting and optimizing for performance and reliability
+- documenting and optimizing for latency and reliability over realistic cable lengths
 
-- ESP32's 4 MB of flash is almost certainly overkill for this project, but what level of complexity might require an SD module?
+- ESP32's 4 MB of flash is almost certainly overkill for this project...I wonder what sort of complexity requires an SD module in some people's projects?
 
 - migrating to platform.io vs Arduino IDE for easier dependency management and version control
 
@@ -140,20 +146,20 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 - **DMX512 Protocol** [wikipedia article](https://en.wikipedia.org/wiki/DMX512)
 
-- **ZQ02001 25W Moving Head DJ Lights** [Manual](https://manuals.plus/uking-2/uking-zq02001-25w-moving-head-dj-lights-user-instructions#dmx_addressing) (used in proof of concept)
+- **ZQ02001 25W Moving Head DJ Lights** [manual](https://manuals.plus/uking-2/uking-zq02001-25w-moving-head-dj-lights-user-instructions#dmx_addressing) (used in proof of concept)
 
 - **ShowBuddy Tutorial** [youtube video](https://youtu.be/_q0ZyGS0VWQ)
 
-- https://randomnerdtutorials.com/esp32-web-server-beginners-guide/
+- **ESP32 Web Server Tutorial** [randomnerdtutorials](https://randomnerdtutorials.com/esp32-web-server-beginners-guide/)
 
 ---
 
-### **Fig. 6:** ESP32 Pinout
+### **Fig. 5:** ESP32 Pinout
 
 ![ESP32 Pinout](images/esp32_pinout.png)
 
 ---
 
-### **Fig. 7:** XLR Wiring
+### **Fig. 6:** XLR Wiring
 
 ![XLR Wiring](images/XLR2.png)
