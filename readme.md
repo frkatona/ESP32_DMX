@@ -2,13 +2,13 @@
 
 ### Overview
 
-This project aims to use a basic ESP32 board to control multiple DMX lighting fixtures wirelessly through a web interface, a la WLED, for less than $15 in parts (**Figure 1**).  Here, I use a moving head fixture for proof of concept (**Figure 2**).
+This project aims to use a basic ESP32 board to control multiple DMX lighting fixtures wirelessly through a web interface with inexpensive components (**Figure 1**).  Here, I use a moving head fixture for proof of concept (**Figure 2**).
 
 - DMX uses a differential signaling method over RS485, so a MAX485 module is used to convert signals from the ESP32's UART pins to DMX-compatible signals (**Figure 3a**)
 
 - These signals connect to a DMX fixture via a standard 3-pin XLR cable (**Figure 3b**)
 
-- In addition to handling the DMX signal encoding, the ESP32 hosts a simple web interface written in HTML/CSS/JS that allows the user to control DMX signal sends over WiFi from a mobile device or computer (**Figure 4**)
+- In addition to handling the DMX signal encoding, the ESP32 serves a web interface written in HTML/CSS/JS that allows the user to control DMX signal sends over WiFi from a mobile device or computer (**Figure 4**)
 
 ---
 
@@ -42,15 +42,19 @@ This project aims to use a basic ESP32 board to control multiple DMX lighting fi
 
 ---
 
-### **Fig. 4:** Mobile Web Interface Screenshot (v3)
+### **Fig. 4:** Mobile Web Interface v4 Screenshot 
 
-![Webpage v3](images/webpage_v3.png)
+![Webpage v4](images/webpage_v4.png)
 
 - *Note that when connecting to the ESP32's access point, the user will need to manually navigate to the IP address (usually 192.168.4.1) in their web browser.  I also had to disable my phone's mobile data to ensure it connected properly*
 
-As a web interface, there is limitless room for extensibility and customizability here, though the current version is very basic.  
+As a web interface, there is limitless room for extensibility and customizability here.  I've chosen to use an XY pad for the first two channels, and sliders with radio buttons to translate their range through each discrete parameter setting, where applicable.
+
+---
 
 Bear in mind that for multiple fixtures, each will need its own DMX address set locally on that device (unless they are all intended to respond identically).  Up to 512 channels can be sent this way in a single DMX daisychained set (a "DMX universe").  So, for instance, 100 devices with 5 channels each could all receive unique instructions (though its unclear at what point the esp32's performance will become a bottleneck).
+
+---
 
 Because I just had to go and use a stupid file system, you will need to format the LittleFS filesystem when uploading the code.  This can take various forms, but in Arduino IDE 2.x, you can download the most recent littlefs .vsix release from [here](https://github.com/earlephilhower/arduino-littlefs-upload/releases), restart the IDE, quit the serial monitor if it's running, and then use the "Upload to LittleFS" command in the command palette (Ctrl+Shift+P).  The addition of this file system accomplishes virtually nothing except to allow you to edit the HTML/CSS/JS files during production as separate files, like you would with a normal web server. That was worth 6 hours.
 
@@ -76,9 +80,13 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 **Compare to existing options**
 
-- $67 usb-to-dmx adapter by Entecc - [amazon](https://www.amazon.com/Open-DMX-USB-Interface-Controller/dp/B00O9RY664?sr=8-4)
+- $17 DMX Shield for Arduino Uno by CQRobot - [amazon](https://www.amazon.com/CQRobot-network-Management-Extended-Functions/dp/B01DUHZAT0?sr=8-1)
 
-- $80 WiFi DMX controller by Pknight - [amazon](https://www.amazon.com/Pknight-Controller-Transceiver-Connectivity-EN-3P/dp/B091DS89M4?sr=8-5)
+  - I'm only discovering this option after I finished the project and it seems viable.  The reviews seem positive and it certainly would save the hassle of manual wiring.  The drawbacks are that even generic Uno boards are more expensive and less powerful than ESP32s, and they do not support wireless connectivity  
+
+- $67 USB (wired) DMX512 interface by Entecc ("Entry level model" in their words) - [amazon](https://www.amazon.com/Open-DMX-USB-Interface-Controller/dp/B00O9RY664?sr=8-4)
+
+- $80 WiFi (wireless) DMX controller by Pknight - [amazon](https://www.amazon.com/Pknight-Controller-Transceiver-Connectivity-EN-3P/dp/B091DS89M4?sr=8-5)
 
 
 
@@ -86,15 +94,17 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 ## to-do
 
-- [ ] Test with multiple DMX fixtures
+- [ ] Test with a multi-fixture universe
 
-- [ ] Implement more advanced fixture routines and effects (probably will want to use a library for this like [https://github.com/cansik/esp-dmx-max485](https://github.com/cansik/esp-dmx-max485), think more on interfacing with ShowBuddy or FL's DMX output)
+- Implement fixture routines and effects beyond manual channel control (current implementation is arguably still inferior to simply keeping the fixture on 'sound' mode)
+    - [ ] look into using a  library for this like [https://github.com/cansik/esp-dmx-max485](https://github.com/cansik/esp-dmx-max485)
+    - [ ] think more on interfacing with ShowBuddy or FL's DMX output
 
-- [ ] Misc. quality of life and troubleshooting
-    - think on better initial states for channels
-    - blink on-board LED when sending DMX data
-    - handle disconnects gracefully
-    - persistent variables with [Preferences.h library](https://randomnerdtutorials.com/esp32-save-data-permanently-preferences/)
+-  Misc. quality of life and troubleshooting
+    - [ ] handle disconnects gracefully
+    - [ ] think on better initial states for channels
+    - [x] blink on-board LED when sending DMX data
+    - [x] persistent variables with a preferences or filesystem library
 
 - [x] Migrate embedded HTML to a LittleFS filesystem for more modularity and ease of updating
 
