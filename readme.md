@@ -16,11 +16,15 @@ This project aims to use a basic ESP32 board to control multiple DMX lighting fi
 
 ![Overview Schematic](images/wireless_ESP32_DMX_schematic.png)
 
+- *Note that this sketch uses the ESP32 as a direct access point rather than connecting both it and the controlling device to a mutual network*  
+
 ---
 
 ### **Fig. 2:** Proof of concept
 
 ![Proof of Concept](images/proof-of-concept-1.gif)
+
+This is just the initial wiring of the circuit with a basic loop incrementing the rotation and strobing the light on the ESP32 to see if DMX signals could be sent reliably
 
 ---
 
@@ -28,11 +32,15 @@ This project aims to use a basic ESP32 board to control multiple DMX lighting fi
 
 ![Basic Circuit](images/basic-circuit-1.png)
 
+A static close-up of the above circuit
+
 - *Note that Youtuber Gadget Reboot seemed to experience no difficulties bitbanging his Arduino's GPIO pins directly into the MAX485 without a UART like the ESP32 has, but presumably that method would prove less consistent in a project where the CPU was having to deal with WiFi components or otherwise deviating from the strict timing requirements of DMX and using more complex fixtures like moving heads where imprecise timings may result in more obvious jerky motion.*
 
 - *Also note that the original ChatGPT sketch used the D4 GPIO pin to selectively pull the TX/RX pins high for control over transmission direction, but I didn't understand why that would be helpful and so hardwired them both to VCC which corresponds to a permanent transmission-enable / receive-disable.*
 
 ![XLR Wiring](images/XLR_wiring.png)
+
+A close-up of the XLR wiring with the shell removed
 
 - *Note that the DMX standard insists on 5-pin XLR connectors to avoid possible confusion with audio XLR cables, particularly ones carrying phantom power which may damage the fixtures, but 3-pin XLR is the "de facto" standard.*  
 
@@ -46,9 +54,9 @@ This project aims to use a basic ESP32 board to control multiple DMX lighting fi
 
 ![Webpage v4](images/webpage_v4.png)
 
-- *Note that when connecting to the ESP32's access point, the user will need to manually navigate to the IP address (usually 192.168.4.1) in their web browser.  I also had to disable my phone's mobile data to ensure it connected properly*
-
 As a web interface, there is limitless room for extensibility and customizability here.  I've chosen to use an XY pad for the first two channels, and sliders with radio buttons to translate their range through each discrete parameter setting, where applicable.
+
+- *Note that when connecting to the ESP32's access point, the user will need to manually navigate to the IP address (usually 192.168.4.1) in their web browser.  I also had to disable my phone's mobile data to ensure it connected properly*
 
 ---
 
@@ -84,6 +92,15 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
   - I'm only discovering this option after I finished the project and it seems viable.  The reviews seem positive and it certainly would save the hassle of manual wiring.  The drawbacks are that even generic Uno boards are more expensive and less powerful than ESP32s, and they do not support wireless connectivity  
 
+- $18 DMX Shield for ESP32 by SparkFun ([video demo](https://youtu.be/WCxcUrVRrqg)) - [sparkfun store](https://www.sparkfun.com/sparkfun-esp32-thing-plus-dmx-to-led-shield.html)
+
+
+  - This option may actually blow my project out of the water for minimizing beginner friction while maintaining high customizability at a relatively low cost.  You have to purchase the ESP32 separately, but not only do you get the RS485 transceiver and DMX in/out, but there's a set of poke-home terminals for addressable RGB LED strips, ground loop isolation, and opto-electronic isolation. 
+    
+    - The sketch in their repo also supports Art-Net (DMX over IP) which is less direct than my method, but certainly makes more sense for the software that will probably be ideal for sending complex DMX routines.  An anonymous reviewer who was happy with their purchase also recommends "using the newer hideakitai/ArtNet library with the SparkFunDMX library to make your own Art-Net node, as it supports ArtPoll and ArtPollReply, very important for Art-Net lighting software compatibility (such as Lightkey)"
+    
+    - Sparkfun suggests the shield be paired with their "ESP32-Thing Plus" board (additional $25), but a reviewer on the product page notes that an ordinary ESP32-S2 WROOM worked fine for them (also that they had to swap which i2c bus the shield used?  I wish they elaborated more on that)
+
 - $67 USB (wired) DMX512 interface by Entecc ("Entry level model" in their words) - [amazon](https://www.amazon.com/Open-DMX-USB-Interface-Controller/dp/B00O9RY664?sr=8-4)
 
 - $80 WiFi (wireless) DMX controller by Pknight - [amazon](https://www.amazon.com/Pknight-Controller-Transceiver-Connectivity-EN-3P/dp/B091DS89M4?sr=8-5)
@@ -102,7 +119,7 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 -  Misc. quality of life and troubleshooting
     - [ ] handle disconnects gracefully
-    - [ ] think on better initial states for channels
+    - [ ] think on better initial states for channels (master dimmer maybe at 50%?)
     - [x] blink on-board LED when sending DMX data
     - [x] persistent variables with a preferences or filesystem library
 
@@ -136,7 +153,9 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 - migrating to platform.io vs Arduino IDE for easier dependency management and version control
 
-- what exactly is in the USB-to-DMX adapters on the market that make them so expensive (~$70 for the barebones open source Enttec)?
+- what could even be in the USB-to-DMX adapters on the market that make them so expensive (~$70 for the barebones open source Enttec)?
+
+- non-traditional performance control, like video -> LED array on an instrument ([example](https://youtu.be/hCFKy4J_xGY))
 
 ---
 
