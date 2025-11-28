@@ -24,7 +24,7 @@ This project aims to use a basic ESP32 board to control multiple DMX lighting fi
 
 ![Proof of Concept](images/proof-of-concept-1.gif)
 
-This is just the initial wiring of the circuit with a basic loop incrementing the rotation and strobing the light on the ESP32 to see if DMX signals could be sent reliably
+This is just the initial wiring of the circuit with a basic loop incrementing the rotation and strobing the light hard-coded on the ESP32 to see if DMX signals could be sent reliably prior to wireless control
 
 ---
 
