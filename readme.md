@@ -16,7 +16,7 @@ This project aims to use a basic ESP32 board to control multiple DMX lighting fi
 
 ![Overview Schematic](images/wireless_ESP32_DMX_schematic.png)
 
-- *Note that this sketch uses the ESP32 as a direct access point rather than connecting both it and the controlling device to a mutual network*  
+- *Note that the current sketch uses the ESP32 as a direct access point rather than connecting both it and the controlling device to a shared network, though the real-world signal strength/integrity would presumably suffer without a dedicated router/switch*
 
 ---
 
