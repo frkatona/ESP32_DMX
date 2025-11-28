@@ -86,7 +86,9 @@ Because I just had to go and use a stupid file system, you will need to format t
 
 Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals may also be useful
 
-**Compare to existing options**
+---
+
+### Compare to existing options
 
 - $17 DMX Shield for Arduino Uno by CQRobot - [amazon](https://www.amazon.com/CQRobot-network-Management-Extended-Functions/dp/B01DUHZAT0?sr=8-1)
 
@@ -155,7 +157,7 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 - what could even be in the USB-to-DMX adapters on the market that make them so expensive (~$70 for the barebones open source Enttec)?
 
-- non-traditional performance control, like video -> LED array on an instrument ([example](https://youtu.be/hCFKy4J_xGY))
+- non-traditional performance control, like video -> LED array on an instrument ([demo video](https://youtu.be/hCFKy4J_xGY) and [guide](https://learn.sparkfun.com/tutorials/using-artnet-dmx-and-the-esp32-to-drive-pixels))
 
 ---
 
