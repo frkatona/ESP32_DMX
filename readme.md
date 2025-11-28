@@ -99,9 +99,9 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
   - This option may actually blow my project out of the water for minimizing beginner friction while maintaining high customizability at a relatively low cost.  You have to purchase the ESP32 separately, but not only do you get the RS485 transceiver and DMX in/out, but there's a set of poke-home terminals for addressable RGB LED strips, ground loop isolation, and opto-electronic isolation. 
     
-    - The sketch in their repo also supports Art-Net (DMX over IP) which is less direct than my method, but certainly makes more sense for the software that will probably be ideal for sending complex DMX routines.  An anonymous reviewer who was happy with their purchase also recommends "using the newer hideakitai/ArtNet library with the SparkFunDMX library to make your own Art-Net node, as it supports ArtPoll and ArtPollReply, very important for Art-Net lighting software compatibility (such as Lightkey)"
+  - The [sketch in their repo](https://github.com/sparkfun/SparkFunDMX/blob/master/examples/Example4-ArtnetOutput/Example4-ArtnetOutput.ino) also supports Art-Net (DMX over IP) which is less direct than my method, but makes more sense for the software that will probably be ideal for sending complex DMX routines.  An anonymous reviewer who was happy with their purchase also recommends "using the newer hideakitai/ArtNet library with the SparkFunDMX library to make your own Art-Net node, as it supports ArtPoll and ArtPollReply, very important for Art-Net lighting software compatibility (such as Lightkey)"
     
-    - Sparkfun suggests the shield be paired with their "ESP32-Thing Plus" board (additional $25), but a reviewer on the product page notes that an ordinary ESP32-S2 WROOM worked fine for them (also that they had to swap which i2c bus the shield used?  I wish they elaborated more on that)
+  - Sparkfun suggests the shield be paired with their "ESP32-Thing Plus" board (additional $25), but a reviewer on the product page notes that an ordinary ESP32-S2 WROOM worked fine for them (also that they had to swap which i2c bus the shield used?  I wish they elaborated more on that)
 
 - $67 USB (wired) DMX512 interface by Entecc ("Entry level model" in their words) - [amazon](https://www.amazon.com/Open-DMX-USB-Interface-Controller/dp/B00O9RY664?sr=8-4)
 
