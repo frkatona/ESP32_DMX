@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMX Login</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-card {
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-input {
+            width: 80%;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .login-input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+        }
+
+        .error-msg {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+            min-height: 1.5rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Welcome</h1>
+    <div class="subtitle">Please authenticate to access controls</div>
+
+    <div class="card login-card">
+        <form id="loginForm" action="/login" method="POST">
+            <input type="password" name="password" class="login-input" placeholder="Enter PIN" required pattern="[0-9]*"
+                inputmode="numeric">
+            <div id="errorMsg" class="error-msg"></div>
+            <button type="submit" class="action-btn">Connect</button>
+        </form>
+    </div>
+
+    <!-- Optional script to handle URL params for error display -->
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('error')) {
+            document.getElementById('errorMsg').textContent = "Incorrect PIN. Please try again.";
+        }
+    </script>
+</body>
+
+</html>
