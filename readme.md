@@ -52,7 +52,7 @@ A close-up of the XLR wiring with the shell removed
 
 ### **Fig. 4:** Mobile Web Interface v4 Screenshot 
 
-![Webpage v4](images/webpage_v4.png)
+<img src="wireless-customWebpage.webp" width="640" />
 
 As a web interface, there is limitless room for extensibility and customizability here.  I've chosen to use an XY pad for the first two channels, and sliders with radio buttons to translate their range through each discrete parameter setting, where applicable.
 
@@ -67,6 +67,19 @@ Bear in mind that for multiple fixtures, each will need its own DMX address set 
 Because I just had to go and use a stupid file system, you will need to format the LittleFS filesystem when uploading the code.  This can take various forms, but in Arduino IDE 2.x, you can download the most recent littlefs .vsix release from [here](https://github.com/earlephilhower/arduino-littlefs-upload/releases), restart the IDE, quit the serial monitor if it's running, and then use the "Upload to LittleFS" command in the command palette (Ctrl+Shift+P).  The addition of this file system accomplishes virtually nothing except to allow you to edit the HTML/CSS/JS files during production as separate files, like you would with a normal web server. That was worth 6 hours.
 
 ---
+
+### **Fig. 5: wireless QLC+ with ArtNet**  
+
+
+![QLC](images/QLC-screenshot.png)
+
+<img src="wireless-customWebpage.webp" width="640" />
+
+---
+
+### **Fig. 6: Captive Portal**
+
+![captive portal](images/captivePortal.png)
 
 ### Parts List
 
@@ -106,8 +119,6 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 - $67 USB (wired) DMX512 interface by Entecc ("Entry level model" in their words) - [amazon](https://www.amazon.com/Open-DMX-USB-Interface-Controller/dp/B00O9RY664?sr=8-4)
 
 - $80 WiFi (wireless) DMX controller by Pknight - [amazon](https://www.amazon.com/Pknight-Controller-Transceiver-Connectivity-EN-3P/dp/B091DS89M4?sr=8-5)
-
-
 
 ---
 
@@ -175,12 +186,12 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 ---
 
-### **Fig. 5:** ESP32 Pinout
+### **Fig. x:** ESP32 Pinout
 
 ![ESP32 Pinout](images/esp32_pinout.png)
 
 ---
 
-### **Fig. 6:** XLR Wiring
+### **Fig. x:** XLR Wiring
 
 ![XLR Wiring](images/XLR2.png)
