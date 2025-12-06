@@ -50,9 +50,11 @@ A close-up of the XLR wiring with the shell removed
 
 ---
 
-### **Fig. 4:** Mobile Web Interface v4 Screenshot 
+### **Fig. 4:** Mobile Web Interface v4 Screenshot and demo
 
-<img src="wireless-customWebpage.webp" width="640" />
+![alt text](images/webpage_v4.png)
+
+![alt text](images/wireless-customWebpage.gif)
 
 As a web interface, there is limitless room for extensibility and customizability here.  I've chosen to use an XY pad for the first two channels, and sliders with radio buttons to translate their range through each discrete parameter setting, where applicable.
 
@@ -68,12 +70,11 @@ Because I just had to go and use a stupid file system, you will need to format t
 
 ---
 
-### **Fig. 5: wireless QLC+ with ArtNet**  
-
+### **Fig. 5: wireless QLC+ settings and demo**  
 
 ![QLC](images/QLC-screenshot.png)
 
-<img src="wireless-customWebpage.webp" width="640" />
+![alt text](images/wireless-QLC.gif)
 
 ---
 
