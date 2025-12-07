@@ -2,23 +2,19 @@
 
 ## **Overview**
 
-This project aims to use a basic ESP32 board to control multiple DMX lighting fixtures wirelessly through a web interface with inexpensive components.
-
-- DMX uses a differential signaling method over RS485, so a MAX485 module is used to convert signals from the ESP32's UART pins to DMX-compatible signals.
-
-- These signals connect to a DMX fixture via a standard 3-pin XLR cable (**Figure 3b**)
-
-- In addition to handling the DMX signal encoding, the ESP32 serves a web interface written in HTML/CSS/JS that allows the user to control DMX signal sends over WiFi from a mobile device or computer (**Figure 4**)
+This project aims to use a basic ESP32 board to remotely control multiple DMX lighting fixtures with inexpensive components.
 
 ![Overview Schematic](images/wireless_ESP32_DMX_schematic.png)
 
 ## **Circuit**
 
-The schematic is best viewed on the GadgetReboot video this video was inspired by (timestamped [here](https://youtu.be/4PjBBBQB2m4?t=306)), but a static close-up of my circuit is shown below:
+DMX uses a differential signaling method over RS485, so a MAX485 module is used to convert signals from the ESP32's UART pins to DMX-compatible signals. These signals connect to a DMX fixture via a standard 3-pin XLR cable.
+
+The schematic is best viewed on the GadgetReboot video this video was inspired by (timestamped [here](https://youtu.be/4PjBBBQB2m4?t=306)), but a static close-up image of my circuit is shown below:
 
 ![Basic Circuit](images/basic-circuit-1.png)
 
-as well as close-up of the XLR wiring:
+as well as of the XLR wiring:
 
 ![XLR Wiring](images/XLR_wiring.png)
 
@@ -109,7 +105,7 @@ const char* LOGIN_PIN = "1234";
 
 I am not sure the best way to manage security/authentication, but here an easy to remember (and guess) PIN is hard-coded into the sketch.  Presumably that will not be a problem for this device, but maybe I'll end up changing the PIN to a passphrase, hard-coding the phrase's hash, and adding a hashing algorithm for the user's input.
 
-## Parts List
+## **Parts List**
 
 **Buy:**
 
@@ -127,7 +123,7 @@ I am not sure the best way to manage security/authentication, but here an easy t
 
 Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals may also be useful
 
-## Notes
+## **Notes**
 
 - the current sketch uses the ESP32 as a direct access point rather than connecting both it and the controlling device to a shared network, though the real-world signal strength/integrity would presumably suffer without a dedicated router/switch
 
@@ -141,7 +137,7 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 - Which of the a/b pair coming from the MAX485 connects to hot/cold on the XLR seems opposite in practice from what I read in the fixture's manual, though it did suggest that the polarity is different in some fixtures.  I'm not yet sure if this will influence downstream fixtures in a daisy-chain, though I suspect it will not
 
-## Compare to existing options
+## **Compare to Existing Options**
 
 - $17 DMX Shield for Arduino Uno by CQRobot - [amazon](https://www.amazon.com/CQRobot-network-Management-Extended-Functions/dp/B01DUHZAT0?sr=8-1)
 
@@ -161,7 +157,7 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 - $80 WiFi (wireless) DMX controller by Pknight - [amazon](https://www.amazon.com/Pknight-Controller-Transceiver-Connectivity-EN-3P/dp/B091DS89M4?sr=8-5)
 
-## to-do
+## **To-Do**
 
 - [ ] Test with a multi-fixture universe
 
@@ -184,7 +180,7 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 - [x] Wire up basic circuit on breadboard
 
-## More considerations
+## **More Considerations**
 
 - connecting a second ESP32 to a MIDI foot controller to trigger DMX scenes for live performance control where the web interface is impractical
 
@@ -206,7 +202,7 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 - non-traditional performance control, like video -> LED array on an instrument ([demo video](https://youtu.be/hCFKy4J_xGY) and [guide](https://learn.sparkfun.com/tutorials/using-artnet-dmx-and-the-esp32-to-drive-pixels))
 
-## Resources
+## **Resources**
 
 - **Gadget Reboot's Arduino-to-DMX Tutorial** [youtube video](https://www.youtube.com/watch?v=4PjBBBQB2m4&pp=ygUZZ2FkZ2V0IHJlYm9vdCBhcmR1aW5vIGRteNgGMg%3D%3D)
 
