@@ -112,18 +112,24 @@ One of the IP assignments shown in the settings image may be unnecessary.  I'm n
 
 In the most straightforward access point configuration, the user will need to manually navigate to the IP address (probably 192.168.4.1) in their web browser (I also had to disable my phone's mobile data to ensure it connected properly).
 
-A captive portal is used here to automatically redirect the user to the IP address when they connect to the access point.  The 
+A captive portal is used here to automatically redirect the user to the IP address when they connect to the access point.
 
 ![captive portal](images/captivePortal.png)
 
+This is done with the DNS and WebServer libraries:
 
 ```cpp
+#include <DNSServer.h>
+#include <WebServer.h>
+
 // Captive Portal / Web Server
 const byte DNS_PORT = 53;
 DNSServer dnsServer;
 WebServer server(80);
 const char* LOGIN_PIN = "1234";
 ```
+
+I am not sure the best way to manage security/authentication, but here an easy to remember (and guess) PIN is hardcoded into the sketch.  Presumably that will not be a problem for this device, but maybe I'll end up changing the PIN to a passphrase, hard-coding the phrase's hash, and adding a hashing algorithm for the user's input.
 
 ## Parts List
 
@@ -219,10 +225,10 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 - **ESP32 Web Server Tutorial** [randomnerdtutorials](https://randomnerdtutorials.com/esp32-web-server-beginners-guide/)
 
-### **Fig. ?:** ESP32 Pinout
+### **Fig. s1:** ESP32 Pinout
 
 ![ESP32 Pinout](images/esp32_pinout.png)
 
-### **Fig. ?:** XLR Wiring
+### **Fig. s2:** XLR Wiring
 
 ![XLR Wiring](images/XLR2.png)
