@@ -1,26 +1,18 @@
 # ESP32 DMX Controller
 
-## Overview
+## **Overview**
 
-This project aims to use a basic ESP32 board to control multiple DMX lighting fixtures wirelessly through a web interface with inexpensive components (**Figure 1**).  Here, I use a moving head fixture for proof of concept (**Figure 2**).
+This project aims to use a basic ESP32 board to control multiple DMX lighting fixtures wirelessly through a web interface with inexpensive components.
 
-- DMX uses a differential signaling method over RS485, so a MAX485 module is used to convert signals from the ESP32's UART pins to DMX-compatible signals (**Figure 3a**)
+- DMX uses a differential signaling method over RS485, so a MAX485 module is used to convert signals from the ESP32's UART pins to DMX-compatible signals.
 
 - These signals connect to a DMX fixture via a standard 3-pin XLR cable (**Figure 3b**)
 
 - In addition to handling the DMX signal encoding, the ESP32 serves a web interface written in HTML/CSS/JS that allows the user to control DMX signal sends over WiFi from a mobile device or computer (**Figure 4**)
 
-## **Fig. 1:** Overview Scheme
-
 ![Overview Schematic](images/wireless_ESP32_DMX_schematic.png)
 
-## **Fig. 2:** Proof of concept
-
-An initial wiring of the circuit hard-coded with a basic loop incrementing the rotation and strobing the light on the ESP32 was used to see if DMX signals could be sent reliably prior to wireless control.  It is shown below:
-
-![Proof of Concept](images/proof-of-concept-1.gif)
-
-## **Fig. 3:** Circuit
+## **Circuit**
 
 The schematic is best viewed on the GadgetReboot video this video was inspired by (timestamped [here](https://youtu.be/4PjBBBQB2m4?t=306)), but a static close-up of my circuit is shown below:
 
@@ -30,7 +22,7 @@ as well as close-up of the XLR wiring:
 
 ![XLR Wiring](images/XLR_wiring.png)
 
-## **Fig. 4:** Mobile Web Interface
+## **Mobile Web Interface**
 
 As a web interface, there is a ton of room for extensibility and customizability here.  I've chosen to use an XY pad for the first two channels, and sliders with radio buttons to translate their range through each discrete parameter setting, where applicable.  The current version is shown here:
 
@@ -42,7 +34,7 @@ as well as a proof of concept video:
 
 Bear in mind that for multiple fixtures, each will need its own DMX address set locally on that device (unless they are all intended to respond identically).  Up to 512 channels can be sent this way in a single DMX daisychained set (a "DMX universe").  So, for instance, 100 devices with 5 channels each could all receive unique instructions (though its unclear at what point the esp32's performance will become a bottleneck).
 
-## **Fig. 5: wireless QLC+ settings and demo**
+## **ArtNet and Routine Automation with QLC+**
 
 For any lighting system more complex than a single fixture with a routine more complex than 'on/off', a lighting control system is likely preferred over a simple web interface.  These software control systems can simplify virtually every aspect of DMX control.  In addition to providing a console interface for direct DMX channel control, they can:
  - host libraries of pre-programmed fixtures, with their DMX channel mappings and icons to visually separate channel types, like GOBO, movement, and color
@@ -71,7 +63,7 @@ along with a short proof of concept video:
 
 One of the IP assignments shown in the settings image may be unnecessary.  I'm not yet very familiar with the software, though I am impressed with its capabilities and relative ease of use.
 
-## File system implementation
+## **File System**
 
 The most straightforward method for including the code to serve HTML content over a network is to just hardcode it as a string into the sketch.  Other than being inelegant, this also becomes inconvenient when you want to prototype and edit the HTML/CSS/JS files separately during development.  A solution to this is to include a filesystem.  
 
@@ -94,7 +86,7 @@ Example:
   file.close();
 ```
 
-## **Fig. 6:** Captive Portal
+## **Captive Portal**
 
 In the most straightforward access point configuration, the user needs to manually navigate to the IP address (probably 192.168.4.1) in their web browser (I also found it necessary to disable my phone's mobile data to ensure it connected properly).
 
