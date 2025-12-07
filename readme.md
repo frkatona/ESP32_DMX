@@ -1,4 +1,4 @@
-# ESP32 DMX Controller
+# ESP32 Wireless DMX Controller
 
 ## **Overview**
 
@@ -28,17 +28,21 @@ as well as a proof of concept video:
 
 ![webpage UI video demo](images/wireless-customWebpage.gif)
 
-Bear in mind that for multiple fixtures, each will need its own DMX address set locally on that device (unless they are all intended to respond identically).  Up to 512 channels can be sent this way in a single DMX daisychained set (a "DMX universe").  So, for instance, 100 devices with 5 channels each could all receive unique instructions (though its unclear at what point the esp32's performance will become a bottleneck).
+Bear in mind that for multiple fixtures, each will need its own DMX address set locally on that device (unless they are all intended to respond identically).  Up to 512 channels can be sent this way in a single DMX daisychained set (a "DMX universe").  So, for instance, 100 devices with 5 channels each could all receive unique instructions—though it's unclear to me at what point the ESP32's performance will become a bottleneck.
 
 ## **ArtNet and Routine Automation with QLC+**
 
-For any lighting system more complex than a single fixture with a routine more complex than 'on/off', a lighting control system is likely preferred over a simple web interface.  These software control systems can simplify virtually every aspect of DMX control.  In addition to providing a console interface for direct DMX channel control, they can:
+For any lighting system more complex than a single fixture, a simple web interface may be insufficient compared to dedicated lighting control software.  In addition to providing a console interface for direct DMX channel control, such software can:
+
  - host libraries of pre-programmed fixtures, with their DMX channel mappings and icons to visually separate channel types, like GOBO, movement, and color
+
  - illustrate an overhead view of the stage with the fixtures in their physical positions to simulate lighting and movement routines
+
  - save complex fixture orchestrations, consolidate them into single button presets, and automate the transition between them 
+
  - transmit DMX512 wirelessly from your device to a DMX receiver through the ArtNet protocol
 
-The sketch has been configured to receive ArtNet DMX data from such software through the ESP32's WiFi interface over UDP (ArtNet port 6454):
+This sketch has been configured to receive ArtNet DMX data from such software through the ESP32's WiFi interface over UDP (ArtNet port 6454):
 
 ```cpp
 #include <WiFiUdp.h>
@@ -137,7 +141,7 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 - Which of the a/b pair coming from the MAX485 connects to hot/cold on the XLR seems opposite in practice from what I read in the fixture's manual, though it did suggest that the polarity is different in some fixtures.  I'm not yet sure if this will influence downstream fixtures in a daisy-chain, though I suspect it will not
 
-## **Compare to Existing Options**
+## **Comparison to Existing Options**
 
 - $17 DMX Shield for Arduino Uno by CQRobot - [amazon](https://www.amazon.com/CQRobot-network-Management-Extended-Functions/dp/B01DUHZAT0?sr=8-1)
 
@@ -164,8 +168,6 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 - [ ] Implement proper fixture routines through QLC+
 
 -  Misc. quality of life and troubleshooting
-    - [ ] handle disconnects gracefully
-    - [ ] think on better initial states for channels (master dimmer maybe at 50%?)
     - [x] automatically direct AP connection to the appropriate IP
     - [x] blink on-board LED when sending DMX data
     - [x] persistent variables with a preferences or filesystem library
@@ -180,11 +182,19 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 - [x] Wire up basic circuit on breadboard
 
-## **More Considerations**
+## **More Thoughts**
 
 - connecting a second ESP32 to a MIDI foot controller to trigger DMX scenes for live performance control where the web interface is impractical
 
-- adding a button to the web interface to trigger a routine
+- 'graceful' disconnect handling (i.e., make device WiFi dropout behave predictably with respect to DMX output to ensure it doesn't disable fixtures or send random data or whatever)
+
+- hard-coding routines
+
+- allow user to interact through the capacitative touch pins on the ESP32 to trigger routines
+
+- would a return signal allow the device to determine the fixture types?  Is there anything that would be helpful to send back to the software over ArtNet?
+
+- what stored user preferences might be more useful to set in the filesystem rather than hard-code?
 
 - adding a button to the web interface to swap to a simple page with like 100 simple, numbered sliders for generic channel control
     
