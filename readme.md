@@ -109,7 +109,23 @@ WebServer server(80);
 const char* LOGIN_PIN = "1234";
 ```
 
-The LOGIN_PIN has since been updated to a more secure system: a passphrase is stored in a 'secrets.txt' file which is gitignored.  The contents are hashed and used to authenticate the user to avoid storing the plaintext password.
+The LOGIN_PIN has since been updated to a more secure system: a passphrase is stored in a 'secrets.txt' file which is gitignored.  The contents are sha256 hashed and used to authenticate the user to avoid storing the plaintext password:
+
+```cpp
+  // Load and hash secret
+  if (LittleFS.exists("/secrets.txt")) {
+      File secretFile = LittleFS.open("/secrets.txt", "r");
+      if (secretFile) {
+          String secret = secretFile.readString();
+          secret.trim(); // Handle newlines
+          sessionHash = sha256(secret);
+          secretFile.close();
+          Serial.println("Secret loaded and hashed.");
+      }
+  } else {
+      Serial.println("secrets.txt not found! Login will fail.");
+  }
+```
 
 ## **Parts List**
 
