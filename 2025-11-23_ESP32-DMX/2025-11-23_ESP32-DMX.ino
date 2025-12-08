@@ -254,6 +254,13 @@ void setup() {
   server.collectHeaders(headerkeys, headerkeyssize);
 
   server.on("/", handleRoot);
+  server.on("/legacy.html", [](){
+      if(!isAuthenticated()) { server.send(403, "text/plain", "Forbidden"); return; }
+      File f = LittleFS.open("/legacy.html", "r");
+      if(!f) { server.send(404, "text/plain", "Legacy file not found"); return; }
+      server.streamFile(f, "text/html");
+      f.close();
+  });
   server.on("/login.html", HTTP_GET, handleLoginUI);
   server.on("/login", HTTP_POST, handleLoginPost);
   

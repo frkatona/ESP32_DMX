@@ -2,41 +2,268 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ESP32 DMX Controller</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 DMX Sliders</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --slider-height: 250px;
+        }
+
+        .slider-grid {
+            display: grid;
+            /* Default to fitting as many as possible (desktop) */
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+
+        /* Mobile Portrait Optimization */
+        @media (max-width: 600px) {
+            .slider-grid {
+                /* Force 2 columns on mobile */
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+        }
+
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 1.5rem 0.5rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .ch-num {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 0.8rem;
+            font-weight: bold;
+        }
+
+        .vertical-range {
+            writing-mode: bt-lr;
+            /* IE */
+            -webkit-appearance: slider-vertical;
+            /* WebKit */
+            width: 40px;
+            /* Wider touch area */
+            height: var(--slider-height);
+            padding: 0;
+            margin: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .val-display {
+            font-family: monospace;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            margin-top: 0.8rem;
+            font-weight: bold;
+        }
+
+        .controls-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .page-indicator {
+            font-family: monospace;
+            color: #AAA;
+            font-size: 1.1rem;
+        }
+
+        .auto-btn {
+            background: var(--accent-color);
+            color: #000;
+            font-weight: bold;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .auto-btn:hover {
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+            transform: scale(1.02);
+        }
+    </style>
 </head>
 
 <body>
-    <h1>ESP32 DMX Controller</h1>
-    <div class="subtitle">Adjust DMX channels 1–9 in real time</div>
+    <h1>DMX Channels</h1>
+    <a href="/legacy.html" style="color: #666; text-decoration: none; font-size: 0.8rem; margin-bottom: 1rem;">Switch to
+        Legacy Control</a>
 
-    <div class="card">
-        <!-- XY Pad for Ch1 (Yaw) & Ch2 (Pitch) -->
-        <div class="xy-pad-container">
-            <div class="xy-label">Rotation</div>
-            <div class="xy-area" id="xyPad">
-                <div class="xy-handle" id="xyHandle"></div>
-            </div>
-            <div class="xy-values">
-                <span>Yaw: <span id="valX">0</span></span>
-                <span>Pitch: <span id="valY">0</span></span>
-            </div>
+    <div class="card" style="max-width: 900px;">
+        <div class="controls-row">
+            <button class="nav-btn" id="prevBtn">← Prev 16</button>
+            <span class="page-indicator" id="pageIndicator">Ch 1-16</span>
+            <button class="nav-btn" id="nextBtn">Next 16 →</button>
         </div>
 
-        <div class="channels" id="channels"></div>
+        <div class="slider-grid" id="sliderGrid"></div>
 
-        <div class="footer-row">
-            <div>
-                <button class="bulk-btn" id="allOffBtn">All Off</button>
-                <button class="bulk-btn" id="allFullBtn">All 255</button>
-            </div>
-            <div class="status" id="status">Idle</div>
+        <div class="controls-row" style="justify-content: center;">
+            <button class="auto-btn" id="autoSlideBtn">Auto Slide Page</button>
         </div>
+
+        <div id="status" class="status">Idle</div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        let pageOffset = 0; // 0 = Ch 1-16, 16 = Ch 17-32, etc.
+        const slidersPerPage = 16;
+        const grid = document.getElementById('sliderGrid');
+        const statusEl = document.getElementById('status');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const pageInd = document.getElementById('pageIndicator');
+        const autoBtn = document.getElementById('autoSlideBtn');
+
+        function setStatus(msg) {
+            statusEl.textContent = msg;
+        }
+
+        function sendDMX(ch, val) {
+            fetch(`/set?ch=${ch}&val=${val}`)
+                .then(r => {
+                    if (!r.ok) throw new Error(r.statusText);
+                    // setStatus(`Set Ch ${ch} -> ${val}`);
+                })
+                .catch(e => setStatus(`Err Ch ${ch}: ${e.message}`));
+        }
+
+        function renderSliders() {
+            grid.innerHTML = '';
+            pageInd.textContent = `Ch ${pageOffset + 1}-${pageOffset + slidersPerPage}`;
+
+            for (let i = 0; i < slidersPerPage; i++) {
+                const ch = pageOffset + i + 1;
+                const div = document.createElement('div');
+                div.className = 'slider-container';
+
+                const label = document.createElement('div');
+                label.className = 'ch-num';
+                label.textContent = `${ch}`;
+
+                const input = document.createElement('input');
+                input.type = 'range';
+                input.min = 0;
+                input.max = 255;
+                input.value = 0;
+                input.className = 'vertical-range';
+
+                const valDisp = document.createElement('div');
+                valDisp.className = 'val-display';
+                valDisp.textContent = '0';
+
+                input.addEventListener('input', (e) => {
+                    valDisp.textContent = e.target.value;
+                    sendDMX(ch, e.target.value);
+                });
+
+                div.appendChild(label);
+                div.appendChild(input);
+                div.appendChild(valDisp);
+                grid.appendChild(div);
+            }
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (pageOffset >= slidersPerPage) {
+                pageOffset -= slidersPerPage;
+                renderSliders();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (pageOffset + slidersPerPage < 512) {
+                pageOffset += slidersPerPage;
+                renderSliders();
+            }
+        });
+
+        // Auto Slide Logic
+        autoBtn.addEventListener('click', async () => {
+            const sliders = document.querySelectorAll('.vertical-range');
+            if (sliders.length === 0) return;
+
+            autoBtn.disabled = true;
+            autoBtn.textContent = "Running...";
+
+            for (let i = 0; i < sliders.length; i++) {
+                await animateSlider(sliders[i], pageOffset + i + 1);
+            }
+
+            autoBtn.disabled = false;
+            autoBtn.textContent = "Auto Slide Page";
+        });
+
+        function animateSlider(inputElement, ch) {
+            return new Promise(resolve => {
+                const duration = 2000; // 2 seconds total per slider
+                const start = performance.now();
+
+                function frame(now) {
+                    const elapsed = now - start;
+                    let progress = elapsed / duration;
+
+                    if (progress > 1) progress = 1;
+
+                    // 0 -> 1 -> 0 triangle wave
+                    let val = 0;
+                    if (progress <= 0.5) {
+                        val = (progress / 0.5) * 255;
+                    } else {
+                        val = ((1 - progress) / 0.5) * 255;
+                    }
+
+                    val = Math.floor(val);
+                    inputElement.value = val;
+                    inputElement.nextElementSibling.textContent = val;
+                    sendDMX(ch, val);
+
+                    if (progress < 1) {
+                        requestAnimationFrame(frame);
+                    } else {
+                        resolve();
+                    }
+                }
+                requestAnimationFrame(frame);
+            });
+        }
+
+        // Init
+        renderSliders();
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ESP32 DMX Controller (Legacy)</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .nav-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--accent-color);
+            font-size: 0.9rem;
+        }
+
+        .nav-link:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>ESP32 DMX Controller</h1>
+    <div class="subtitle">Adjust DMX channels 1–9 in real time</div>
+
+    <a href="/" class="nav-link">← Back to New Sliders</a>
+
+    <div class="card">
+        <!-- XY Pad for Ch1 (Yaw) & Ch2 (Pitch) -->
+        <div class="xy-pad-container">
+            <div class="xy-label">Rotation</div>
+            <div class="xy-area" id="xyPad">
+                <div class="xy-handle" id="xyHandle"></div>
+            </div>
+            <div class="xy-values">
+                <span>Yaw: <span id="valX">0</span></span>
+                <span>Pitch: <span id="valY">0</span></span>
+            </div>
+        </div>
+
+        <div class="channels" id="channels"></div>
+
+        <div class="footer-row">
+            <div>
+                <button class="bulk-btn" id="allOffBtn">All Off</button>
+                <button class="bulk-btn" id="allFullBtn">All 255</button>
+            </div>
+            <div class="status" id="status">Idle</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
