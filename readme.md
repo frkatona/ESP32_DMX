@@ -185,6 +185,8 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 
 - [ ] Implement proper fixture routines through QLC+
 
+- [ ] Fix lingering bugginess in the xy pad interaction
+
 -  Misc. quality of life and troubleshooting
     - [x] automatically direct AP connection to the appropriate IP
     - [x] blink on-board LED when sending DMX data
@@ -205,6 +207,8 @@ Miscellaneous items like heat shrink tubing, wire strippers, and screw terminals
 - connecting a second ESP32 to a MIDI foot controller to trigger DMX scenes for live performance control where the web interface is impractical
 
 - 'graceful' disconnect handling (i.e., make device WiFi dropout behave predictably with respect to DMX output to ensure it doesn't disable fixtures or send random data or whatever)
+
+- is some kind of token being stored to let me back into the captive portal after a period of inactivity?  It seems like I don't have to sign back in, but I didn't manually implement anything like that.  I must be misunderstanding something.
 
 - hard-coding routines
 
