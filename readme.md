@@ -10,7 +10,7 @@ This project aims to use a basic ESP32 board to remotely control multiple DMX li
 
 DMX uses a differential signaling method over RS485, so a MAX485 module is used to convert signals from the ESP32's UART pins to DMX-compatible signals. These signals connect to a DMX fixture via a standard 3-pin XLR cable.
 
-The schematic is best viewed on the GadgetReboot video this video was inspired by (timestamped [here](https://youtu.be/4PjBBBQB2m4?t=306)), but a static close-up image of my circuit is shown below:
+A comparable circuit can be viewed on the GadgetReboot video that inspired this project (timestamped [here](https://youtu.be/4PjBBBQB2m4?t=306)), but a static close-up picture of my circuit is shown below:
 
 ![Basic Circuit](images/basic-circuit-1.png)
 
@@ -109,7 +109,7 @@ WebServer server(80);
 const char* LOGIN_PIN = "1234";
 ```
 
-I am not sure the best way to manage security/authentication, but here an easy to remember (and guess) PIN is hard-coded into the sketch.  Presumably that will not be a problem for this device, but maybe I'll end up changing the PIN to a passphrase, hard-coding the phrase's hash, and adding a hashing algorithm for the user's input.
+The LOGIN_PIN has since been updated to a more secure system: a passphrase is stored in a 'secrets.txt' file which is gitignored.  The contents are hashed and used to authenticate the user to avoid storing the plaintext password.
 
 ## **Parts List**
 

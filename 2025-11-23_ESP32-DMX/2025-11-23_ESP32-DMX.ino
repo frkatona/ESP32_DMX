@@ -4,6 +4,8 @@
 #include <LittleFS.h>
 #include <WiFiUdp.h>
 #include <DNSServer.h>
+#include <mbedtls/md.h>
+
 
 #define FORMAT_LITTLEFS_IF_FAILED true
 
@@ -35,7 +37,31 @@ uint8_t packetBuffer[ARTNET_BUFFER_MAX];
 const byte DNS_PORT = 53;
 DNSServer dnsServer;
 WebServer server(80);
-const char* LOGIN_PIN = "1234";
+// Store the hashed secret here
+String sessionHash = "";
+
+// Helper to calculate SHA256 of a string
+String sha256(String payload) {
+  byte shaResult[32];
+  mbedtls_md_context_t ctx;
+  mbedtls_md_type_t md_type = MBEDTLS_MD_SHA256;
+ 
+  mbedtls_md_init(&ctx);
+  mbedtls_md_setup(&ctx, mbedtls_md_info_from_type(md_type), 0);
+  mbedtls_md_starts(&ctx);
+  mbedtls_md_update(&ctx, (const unsigned char *) payload.c_str(), payload.length());
+  mbedtls_md_finish(&ctx, shaResult);
+  mbedtls_md_free(&ctx);
+ 
+  String hashStr = "";
+  for(int i=0; i<sizeof(shaResult); i++) {
+      char buf[3];
+      sprintf(buf, "%02x", shaResult[i]);
+      hashStr += buf;
+  }
+  return hashStr;
+}
+
 
 /////////////////////////////
 // DMX frame send routine  //
@@ -139,15 +165,24 @@ void handleLoginUI() {
 }
 
 void handleLoginPost() {
-  if (server.hasArg("password") && server.arg("password") == LOGIN_PIN) {
-    server.sendHeader("Location", "/", true);
-    server.sendHeader("Set-Cookie", "dmx_auth=1; Path=/; Max-Age=3600"); // 1 hour session
-    server.send(302, "text/plain", "");
-  } else {
-    server.sendHeader("Location", "/login.html?error=1", true);
-    server.send(302, "text/plain", "");
+  if (server.hasArg("password")) {
+    String input = server.arg("password");
+    String inputHash = sha256(input);
+    
+    // Compare computed hash of input vs stored hash of secret
+    if (inputHash.equalsIgnoreCase(sessionHash)) {
+        server.sendHeader("Location", "/", true);
+        server.sendHeader("Set-Cookie", "dmx_auth=1; Path=/; Max-Age=3600"); 
+        server.send(302, "text/plain", "");
+        return;
+    }
   }
+  
+  // Failure
+  server.sendHeader("Location", "/login.html?error=1", true);
+  server.send(302, "text/plain", "");
 }
+
 
 void handleSet() {
   // Protection: Require auth for control?
@@ -225,6 +260,20 @@ void setup() {
   // format filesystem if it fails to mount
   if(!LittleFS.begin(FORMAT_LITTLEFS_IF_FAILED)){
     Serial.println("An Error has occurred while mounting LittleFS");
+  }
+
+  // Load and hash secret
+  if (LittleFS.exists("/secrets.txt")) {
+      File secretFile = LittleFS.open("/secrets.txt", "r");
+      if (secretFile) {
+          String secret = secretFile.readString();
+          secret.trim(); // Handle newlines
+          sessionHash = sha256(secret);
+          secretFile.close();
+          Serial.println("Secret loaded and hashed.");
+      }
+  } else {
+      Serial.println("secrets.txt not found! Login will fail.");
   }
 
   pinMode(DMX_DE_RE_PIN, OUTPUT);
